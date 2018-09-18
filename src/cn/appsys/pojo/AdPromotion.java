@@ -3,17 +3,19 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class AdPromotion {
-	private Integer id;//主键ID
+	private Integer id;//涓婚敭ID
 	private Integer appId;//appId
-	private String adPicPath;//广告图片存储路径
-	private Integer adPV;//广告点击量
-	private Integer carouselPosition;//轮播位（1-n）
-	private Date startTime;//广告起效时间
-	private Date endTime;//广告失效时间
-	private Integer createdBy;//创建者
-	private Date creationDate;//创建时间
-	private Integer modifyBy;//更新者
-	private Date modifyDate;//更新时间
+	private String adPicPath;//骞垮憡鍥剧墖瀛樺偍璺緞
+	private Integer adPV;//骞垮憡鐐瑰嚮閲�
+	private Integer carouselPosition;//杞挱浣嶏紙1-n锛�
+	private Date startTime;//骞垮憡璧锋晥鏃堕棿
+	private Date endTime;//骞垮憡澶辨晥鏃堕棿
+	private Integer createdBy;//鍒涘缓鑰�
+	private Date creationDate;//鍒涘缓鏃堕棿
+	private Integer modifyBy;//鏇存柊鑰�
+	private Date modifyDate;//鏇存柊鏃堕棿
+	
+	
 	public Integer getId() {
 		return id;
 	}

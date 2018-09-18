@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
@@ -63,52 +62,52 @@ public class DevAppInfoController {
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
-			//ÏÈÉ¾ÎÄ¼ş  ±éÀúversionListÉ¾³ıÃ¿¸ö°æ±¾µÄÎÄ¼ş 
+			//å…ˆåˆ æ–‡ä»¶  éå†versionListåˆ é™¤æ¯ä¸ªç‰ˆæœ¬çš„æ–‡ä»¶ 
 			for (AppVersion appVersion : versionList) {
 				if(appVersion.getApkLocPath() != null) {
 					File file = new File(appVersion.getApkLocPath());
 					//flag = file.delete();
-					//°æ±¾ÎÄ¼şÉ¾³ıÊ§°Ü
+					//ç‰ˆæœ¬æ–‡ä»¶åˆ é™¤å¤±è´¥    
 					/*if(flag == false) {
 						hashMap.put("delResult", "false");
 						break;
 					}*/
 				}
-				//É¾³ı°æ±¾
+				//åˆ é™¤ç‰ˆæœ¬
 				//flag = appVersionService.delVersionByInfoId(id);
 			}
 			/*if(flag == false) {
 				hashMap.put("delResult", "false");
-				//»Øµ½appinfolistÒ³Ãæ
+				//å›åˆ°appinfolisté¡µé¢
 				return "developer/appinfolist";
 			}*/
-			//É¾³ıappÍ¼Æ¬     Â·¾¶¶Ô²»ÉÏÉ¾²»µô
+			//åˆ é™¤appå›¾ç‰‡     è·¯å¾„å¯¹ä¸ä¸Šåˆ ä¸æ‰
 			if(appInfo.getLogoLocPath() != null) {
 				File file = new File(appInfo.getLogoLocPath());
 				//flag = file.delete();
 			}
 			/*if(flag == false) {
 				hashMap.put("delResult", "false");
-				//»Øµ½appinfolistÒ³Ãæ
+				//å›åˆ°appinfolisté¡µé¢
 				return "developer/appinfolist";
 			}*/
-			//ÉÏÃæµÄ¶¼É¾³ı³É¹¦ÁË   É¾³ıappĞÅÏ¢
+			//ä¸Šé¢çš„éƒ½åˆ é™¤æˆåŠŸäº†   åˆ é™¤appä¿¡æ¯
 			if(flag) {
 			 	flag = appInfoService.dealpp(id);
 			}
 			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//»Øµ½appinfolistÒ³Ãæ
+				//å›åˆ°appinfolisté¡µé¢
 				return "developer/appinfolist";
 			}
 			hashMap.put("delResult", "true");
 		}
-		//Ìø×ªµ½appinfolstÒ³Ãæ
+		//è·³è½¬åˆ°appinfolsté¡µé¢
 		return JSON.toJSONString(hashMap);
 	}
 	
 	/**
-	 * ²é¿´appÏêÏ¸ĞÅÏ¢
+	 * æŸ¥çœ‹appè¯¦ç»†ä¿¡æ¯
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -124,7 +123,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * Ôö¼Ó°æ±¾
+	 * å¢åŠ ç‰ˆæœ¬
 	 * @param request
 	 * @param appVersion
 	 * @param attach
@@ -136,51 +135,51 @@ public class DevAppInfoController {
 		String IdPicPath = null;
 		String fileName = null;
 		String path = null;
-		//ÅĞ¶ÏÎÄ¼şÊÇ·ñÎª¿Õ
+		//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦ä¸ºç©º
 		if(!attach.isEmpty()) {
-			//ÎÄ¼şµÄ·şÎñÆ÷´æ´¢Â·¾¶
+			//æ–‡ä»¶çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
 			path = request.getServletContext().getRealPath("statics"+File.separator+"uploadfils");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
 			if(attach.getSize() > filesize) {
-				request.getSession().setAttribute("fileUploadError", "ÉÏ´«ÎÄ¼ş²»ÄÜ³¬¹ı500kb");
-				//·µ»ØÔö¼Ó°æ±¾Ò³Ãæ
+				request.getSession().setAttribute("fileUploadError", "ä¸Šä¼ æ–‡ä»¶ä¸èƒ½è¶…è¿‡500kb");
+				//è¿”å›å¢åŠ ç‰ˆæœ¬é¡µé¢
 				return "developer/appversionadd";
 			}else if(prefix.equalsIgnoreCase("apk")){
-				//ĞÂÎÄ¼şÃû
+				//æ–°æ–‡ä»¶å
 				fileName = System.currentTimeMillis()+"_xxx.apk";
 				File targetFile = new File(path,fileName);
 				if(!targetFile.exists()) {
 					targetFile.mkdirs();
 				}
-				//±£´æ
+				//ä¿å­˜
 				try {
 					attach.transferTo(targetFile);
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					request.setAttribute("fileUploadError", "ÉÏ´«Ê§°Ü");
+					request.setAttribute("fileUploadError", "ä¸Šä¼ å¤±è´¥");
 					return "developer/appversionadd";
 				}
 				IdPicPath = path+File.separator+fileName;
 				
 			}else {
-				request.setAttribute("fileUploadError", "ÉÏ´«ÎÄ¼ş¸ñÊ½²»ÕıÈ·");
+				request.setAttribute("fileUploadError", "ä¸Šä¼ æ–‡ä»¶æ ¼å¼ä¸æ­£ç¡®");
 				return "developer/appversionadd";
 			}
 		}
 		
-		//ÍêÉÆ¶ÔÏóÖµ
-		//ÏÂÔØÁ´½Ó  ÎÄ¼ş´æ´¢Â·¾¶+ÎÄ¼şÃû
+		//å®Œå–„å¯¹è±¡å€¼
+		//ä¸‹è½½é“¾æ¥  æ–‡ä»¶å­˜å‚¨è·¯å¾„+æ–‡ä»¶å
 		appVersion.setDownloadLink(path+fileName);
-		//´´½¨Õß
+		//åˆ›å»ºè€…
 		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
 		appVersion.setCreatedBy(devUser.getCreatedBy());
-		//´´½¨Ê±¼ä
+		//åˆ›å»ºæ—¶é—´
 		appVersion.setCreationDate(new Date());
-		//apkÎÄ¼şµÄ·şÎñÆ÷´æ´¢Â·¾¶
+		//apkæ–‡ä»¶çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
 		appVersion.setApkLocPath(path);
-		//ÉÏ´«µÄapkÎÄ¼şÃû³Æ
+		//ä¸Šä¼ çš„apkæ–‡ä»¶åç§°
 		appVersion.setApkFileName(fileName);
 		
 		if(!appVersionService.addVersion(appVersion)) {
@@ -191,7 +190,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ¸ù¾İappId²éÑ¯°æ±¾ÁĞ±í
+	 * æ ¹æ®appIdæŸ¥è¯¢ç‰ˆæœ¬åˆ—è¡¨
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -209,7 +208,7 @@ public class DevAppInfoController {
 	
 	
 	/**
-	 * ¸ù¾İ¸¸if²éÑ¯·ÖÀàÁĞ±í
+	 * æ ¹æ®çˆ¶ifæŸ¥è¯¢åˆ†ç±»åˆ—è¡¨
 	 * @param pid
 	 * @return
 	 */
@@ -221,7 +220,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * Ìô×ªµ½Ê×Ò³
+	 * æŒ‘è½¬åˆ°é¦–é¡µ
 	 * @param model
 	 * @param queryAppInfoVO
 	 * @return
@@ -240,15 +239,15 @@ public class DevAppInfoController {
 		
 		appInfoService.getAppInfoList(pageBean,queryAppInfoVO);
 		
-		//²éÑ¯app×´Ì¬
+		//æŸ¥è¯¢appçŠ¶æ€
 		List<DataDictionary> statusList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_STATUS");
-		//²éÑ¯appËùÊôÆ½Ì¨
+		//æŸ¥è¯¢appæ‰€å±å¹³å°
 		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
-		//²éÑ¯Ò»¼¶·ÖÀà
+		//æŸ¥è¯¢ä¸€çº§åˆ†ç±»
 		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(null);
 		
-		// ÍêÉÆ·ÖÀàµÄ»ØÏÔ
-		// Èç¹û´«ÁËÒ»¼¶·ÖÀà  ËµÃ÷ÄãÑ¡Ôñ¹ı  ËùÒÔ¿Ï¶¨´¥·¢¹ıÈı¼¶Áª¶¯  ÈÏÎªÓ¦¸Ã½«¶ş¼¶·ÖÀàÈ«²¿²éÑ¯
+		// å®Œå–„åˆ†ç±»çš„å›æ˜¾
+		// å¦‚æœä¼ äº†ä¸€çº§åˆ†ç±»  è¯´æ˜ä½ é€‰æ‹©è¿‡  æ‰€ä»¥è‚¯å®šè§¦å‘è¿‡ä¸‰çº§è”åŠ¨  è®¤ä¸ºåº”è¯¥å°†äºŒçº§åˆ†ç±»å…¨éƒ¨æŸ¥è¯¢
 		if(queryAppInfoVO.getQueryCategoryLevel1() != null) {
 			List<AppCategory> categoryLevel2List = appCategoryService.getAppCategoryListByParentId(queryAppInfoVO.getQueryCategoryLevel1());
 			model.addAttribute("categoryLevel2List", categoryLevel2List);

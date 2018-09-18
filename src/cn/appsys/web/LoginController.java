@@ -18,7 +18,7 @@ public class LoginController {
 	private DevUserService devUserService;
 	
 	/**
-	 *  �?发�?�注�?
+	 *  寮?鍙戣?呮敞閿?
 	 * @param session
 	 * @return
 	 */
@@ -34,7 +34,7 @@ public class LoginController {
 	}
 	
 	/**
-	 *  �?发�?�登�?
+	 *  寮?鍙戣?呯櫥褰?
 	 * @param request
 	 * @param devCode
 	 * @param devPassword
@@ -44,14 +44,14 @@ public class LoginController {
 	public String doDevLogin(HttpServletRequest request,@RequestParam String devCode,@RequestParam String devPassword) {
 		DevUser loginUser = devUserService.login(devCode,devPassword);
 		if(loginUser == null) {
-			request.setAttribute("error", "�û������������");
+			request.setAttribute("error", "用户名或密码错误");
 			return "devlogin";
 		}
 		request.getSession().setAttribute("devLoginUser", loginUser);
 		return "redirect:/dev/main";
 	}
 	
-	// 后台管理和开发�?�平台登录入口跳�?
+	// 鍚庡彴绠＄悊鍜屽紑鍙戣?呭钩鍙扮櫥褰曞叆鍙ｈ烦杞?
 	@RequestMapping("/manager/login")
 	public String toManagerLogin() {
 		return "backendlogin";
