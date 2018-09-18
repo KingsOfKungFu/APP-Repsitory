@@ -139,6 +139,7 @@ public class DevAppInfoController {
 		if(!attach.isEmpty()) {
 			//文件的服务器存储路径
 			path = request.getServletContext().getRealPath("statics"+File.separator+"uploadfils");
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfils");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
