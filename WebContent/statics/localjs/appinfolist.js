@@ -3,8 +3,8 @@ $("#queryCategoryLevel1").change(function(){
 	if(queryCategoryLevel1 != '' && queryCategoryLevel1 != null){
 		$.ajax({
 			type:"GET",//请求类型
-			url:"categorylevellist.json",//请求的url
-			data:{pid:queryCategoryLevel1},//请求参数
+			url:"getclist/"+queryCategoryLevel1,//请求的url
+			//data:{pid:queryCategoryLevel1},//请求参数
 			dataType:"json",//ajax接口（请求url）返回的数据类型
 			success:function(data){//data：返回数据（json对象）
 				$("#queryCategoryLevel2").html("");
@@ -27,8 +27,8 @@ $("#queryCategoryLevel1").change(function(){
 		$("#queryCategoryLevel2").html(options);
 	}
 	$("#queryCategoryLevel3").html("");
-	var options = "<option value=\"\">--请选择--</option>";
-	$("#queryCategoryLevel3").html(options);
+	/*var options = "<option value=\"\">--请选择--</option>";
+	$("#queryCategoryLevel3").html(options);*/
 });
 
 $("#queryCategoryLevel2").change(function(){
@@ -36,8 +36,8 @@ $("#queryCategoryLevel2").change(function(){
 	if(queryCategoryLevel2 != '' && queryCategoryLevel2 != null){
 		$.ajax({
 			type:"GET",//请求类型
-			url:"categorylevellist.json",//请求的url
-			data:{pid:queryCategoryLevel2},//请求参数
+			url:"getclist/"+queryCategoryLevel2,//请求的url
+			//data:{pid:queryCategoryLevel2},//请求参数
 			dataType:"json",//ajax接口（请求url）返回的数据类型
 			success:function(data){//data：返回数据（json对象）
 				$("#queryCategoryLevel3").html("");
@@ -63,7 +63,7 @@ $("#queryCategoryLevel2").change(function(){
 
 $(".addVersion").on("click",function(){
 	var obj = $(this);
-	window.location.href="appversionadd?id="+obj.attr("appinfoid");
+	window.location.href=window.document.location.href+"/appversionadd/"+obj.attr("appinfoid");
 });
 $(".modifyVersion").on("click",function(){
 	var obj = $(this);
@@ -175,7 +175,7 @@ var saleSwitchAjax = function(appId,obj){
 
 $(".viewApp").on("click",function(){
 	var obj = $(this);
-	window.location.href="appview/"+ obj.attr("appinfoid");
+	window.location.href=window.document.location.href+"/appview/"+ obj.attr("appinfoid");
 });
 
 $(".deleteApp").on("click",function(){
@@ -183,7 +183,7 @@ $(".deleteApp").on("click",function(){
 	if(confirm("你确定要删除APP应用【"+obj.attr("appsoftwarename")+"】及其所有的版本吗？")){
 		$.ajax({
 			type:"GET",
-			url:"delapp.json",
+			url:window.document.location.href+"/delapp",
 			data:{id:obj.attr("appinfoid")},
 			dataType:"json",
 			success:function(data){
