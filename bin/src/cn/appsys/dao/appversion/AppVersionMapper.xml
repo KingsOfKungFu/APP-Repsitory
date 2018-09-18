@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.appsys.dao.appversion.AppVersionMapper">
+
+
+
+	<!-- int delVersionByInfoId(@Param("id") Integer id); -->
+	<delete id="delVersionByInfoId">
+			DELETE FROM app_version 
+			WHERE appId = #{id}
+	</delete>
+	
+
+	<!-- List<AppVersion> getVersionByAppInfoId(@Param("id") Integer id); -->
+	<select id="getVersionByAppInfoId" resultType="AppVersion">
+		select * from app_version
+			where appId = #{id}
+	</select>
+	
+	<!-- int addVersion(AppVersion appVersion); -->
+	<insert id="addVersion">
+		insert into app_version(
+			<if test="appId != null">appId,</if>
+			<if test="versionNo != null">versionNo,</if>
+			<if test="versionInfo != null">versionInfo,</if>
+			<if test="publishStatus != null">publishStatus,</if>
+			<if test="downloadLink != null">downloadLink,</if>
+			<if test="versionSize != null">versionSize,</if>
+			<if test="createdBy != null">createdBy,</if>
+			<if test="creationDate != null">creationDate,</if>
+			<if test="modifyBy != null">modifyBy,</if>
+			<if test="modifyDate != null">modifyDate,</if>
+			<if test="apkLocPath != null">apkLocPath,</if>
+			<if test="apkFileName != null">apkFileName</if>
+		) values(
+			<if test="appId != null">#{appId},</if>
+			<if test="versionNo != null">#{versionNo},</if>
+			<if test="versionInfo != null">#{versionInfo},</if>
+			<if test="publishStatus != null">#{publishStatus},</if>
+			<if test="downloadLink != null">#{downloadLink},</if>
+			<if test="versionSize != null">#{versionSize},</if>
+			<if test="createdBy != null">#{createdBy},</if>
+			<if test="creationDate != null">#{creationDate},</if>
+			<if test="modifyBy != null">#{modifyBy},</if>
+			<if test="modifyDate != null">#{modifyDate},</if>
+			<if test="apkLocPath != null">#{apkLocPath},</if>
+			<if test="apkFileName != null">#{apkFileName}</if>
+		)
+		
+	</insert>
+	
+	<!-- List<AppVersion> getAppVersionByInfoid(@Param("appinfoid") Integer appinfoid); -->
+	<select id="getAppVersionByInfoid" resultType="AppVersion">
+		SELECT i.softwareName,v.versionNo,v.versionSize,d.valueName,v.modifyDate,v.apkFileName
+			FROM app_info i,app_version v,data_dictionary d
+				WHERE 
+					i.id = v.appId
+					AND d.typeCode = 'APP_STATUS' AND d.valueId = i.status
+					AND i.id = #{appinfoid}
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
