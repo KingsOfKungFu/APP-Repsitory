@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FilenameUtils;
@@ -139,7 +138,7 @@ public class DevAppInfoController {
 		//判断文件是否为空
 		if(!attach.isEmpty()) {
 			//文件的服务器存储路径
-			path = request.getServletContext().getRealPath("statics"+File.separator+"uploadfils");
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfils");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
