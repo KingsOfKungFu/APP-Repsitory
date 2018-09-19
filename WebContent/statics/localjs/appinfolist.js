@@ -75,7 +75,7 @@ $(".modifyVersion").on("click",function(){
 		if(versionid == null || versionid == ""){
 			alert("该APP应用无版本信息，请先增加版本信息！");
 		}else{
-			window.location.href="appversionmodify?vid="+ versionid + "&aid="+ appinfoid;
+			window.location.href=location.href+"/toappversionmodify?vid="+ versionid + "&aid="+ appinfoid;
 		}
 	}else{
 		alert("该APP应用的状态为：【"+obj.attr("statusname")+"】,不能修改其版本信息，只可进行【新增版本】操作！");

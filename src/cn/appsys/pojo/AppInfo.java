@@ -4,42 +4,42 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class AppInfo {
-	private Integer id;//ä¸»é”®id
-	private String softwareName;//è½¯ä»¶åç§°
-	private String APKName;//APKåç§°
-	private String supportROM;//æ”¯æŒROM
-	private String interfaceLanguage;//ç•Œé¢è¯­è¨€
-	private Date updateDate;//æ›´æ–°æ—¥æœŸ
-	private BigDecimal softwareSize;//è½¯ä»¶å¤§å°ï¼ˆå•ä½ï¼šMï¼‰
-	private Integer devId;//å¼€å‘è€…id
-	private String appInfo;//åº”ç”¨ç®€ä»‹
-	private Integer status;//appçŠ¶æ€id
-	private Date onSaleDate;//ä¸Šæ¶æ—¶é—´
-	private Date offSaleDate;//ä¸‹æ¶æ—¶é—´
-	private Integer categoryLevel3;//æ‰€å±ä¸‰çº§åˆ†ç±»id
-	private Integer downloads;//ä¸‹è½½é‡ï¼ˆå•ä½ï¼šæ¬¡ï¼‰
-	private Integer flatformId;//appæ‰€å±å¹³å°id
-	private Integer createdBy;//åˆ›å»ºè€…
-	private Date creationDate;//åˆ›å»ºæ—¶é—´
-	private Integer modifyBy;//æ›´æ–°è€…
-	private Date modifyDate;//æ›´æ–°æ—¶é—´
+	private Integer id;//Ö÷¼üid
+	private String softwareName;//Èí¼şÃû³Æ
+	private String APKName;//APKÃû³Æ
+	private String supportROM;//Ö§³ÖROM
+	private String interfaceLanguage;//½çÃæÓïÑÔ
+	private Date updateDate;//¸üĞÂÈÕÆÚ
+	private BigDecimal softwareSize;//Èí¼ş´óĞ¡£¨µ¥Î»£ºM£©
+	private Integer devId;//¿ª·¢Õßid
+	private String appInfo;//Ó¦ÓÃ¼ò½é
+	private Integer status;//app×´Ì¬id
+	private Date onSaleDate;//ÉÏ¼ÜÊ±¼ä
+	private Date offSaleDate;//ÏÂ¼ÜÊ±¼ä
+	private Integer categoryLevel3;//ËùÊôÈı¼¶·ÖÀàid
+	private Integer downloads;//ÏÂÔØÁ¿£¨µ¥Î»£º´Î£©
+	private Integer flatformId;//appËùÊôÆ½Ì¨id
+	private Integer createdBy;//´´½¨Õß
+	private Date creationDate;//´´½¨Ê±¼ä
+	private Integer modifyBy;//¸üĞÂÕß
+	private Date modifyDate;//¸üĞÂÊ±¼ä
 	
-	private String statusName;//appçŠ¶æ€åç§°
-	private String flatformName;//appæ‰€å±å¹³å°åç§°
-	private String categoryLevel3Name;//æ‰€å±ä¸‰çº§åˆ†ç±»åç§°
-	private String devName;//å¼€å‘è€…åç§°
+	private String statusName;//app×´Ì¬Ãû³Æ
+	private String flatformName;//appËùÊôÆ½Ì¨Ãû³Æ
+	private String categoryLevel3Name;//ËùÊôÈı¼¶·ÖÀàÃû³Æ
+	private String devName;//¿ª·¢ÕßÃû³Æ
 	
-	private Integer categoryLevel1;//æ‰€å±ä¸€çº§åˆ†ç±»id
-	private Integer categoryLevel2;//æ‰€å±äºŒçº§åˆ†ç±»id
+	private Integer categoryLevel1;//ËùÊôÒ»¼¶·ÖÀàid
+	private Integer categoryLevel2;//ËùÊô¶ş¼¶·ÖÀàid
 	
-	private String categoryLevel1Name;//æ‰€å±ä¸€çº§åˆ†ç±»åç§°
-	private String categoryLevel2Name;//æ‰€å±äºŒçº§åˆ†ç±»åç§°
+	private String categoryLevel1Name;//ËùÊôÒ»¼¶·ÖÀàÃû³Æ
+	private String categoryLevel2Name;//ËùÊô¶ş¼¶·ÖÀàÃû³Æ
 	
-	private String logoPicPath;//LOGOå›¾ç‰‡URLè·¯å¾„
-	private String logoLocPath;//LOGOå›¾ç‰‡çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
+	private String logoPicPath;//LOGOÍ¼Æ¬URLÂ·¾¶
+	private String logoLocPath;//LOGOÍ¼Æ¬µÄ·şÎñÆ÷´æ´¢Â·¾¶
 	
-	private Integer versionId;//æœ€æ–°çš„ç‰ˆæœ¬id
-	private String versionNo;//æœ€æ–°çš„ç‰ˆæœ¬å·
+	private Integer versionId;//×îĞÂµÄ°æ±¾id
+	private String versionNo;//×îĞÂµÄ°æ±¾ºÅ
 		
 	public String getVersionNo() {
 		return versionNo;

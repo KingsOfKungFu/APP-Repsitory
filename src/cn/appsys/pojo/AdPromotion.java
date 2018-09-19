@@ -3,17 +3,17 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class AdPromotion {
-	private Integer id;//æ¶“å©šæ•­ID
+	private Integer id;//Ö÷¼üID
 	private Integer appId;//appId
-	private String adPicPath;//éªå®æ†¡é¥å‰§å¢–ç€›æ¨ºåç’ºîˆšç·
-	private Integer adPV;//éªå®æ†¡éç‘°åš®é–²ï¿½
-	private Integer carouselPosition;//æî†½æŒ±æµ£å¶ç´™1-né”›ï¿½
-	private Date startTime;//éªå®æ†¡ç’§é”‹æ™¥éƒå •æ£¿
-	private Date endTime;//éªå®æ†¡æ¾¶è¾¨æ™¥éƒå •æ£¿
-	private Integer createdBy;//é’æ¶˜ç¼“é‘°ï¿½
-	private Date creationDate;//é’æ¶˜ç¼“éƒå •æ£¿
-	private Integer modifyBy;//é‡å­˜æŸŠé‘°ï¿½
-	private Date modifyDate;//é‡å­˜æŸŠéƒå •æ£¿
+	private String adPicPath;//¹ã¸æÍ¼Æ¬´æ´¢Â·¾¶
+	private Integer adPV;//¹ã¸æµã»÷Á¿
+	private Integer carouselPosition;//ÂÖ²¥Î»£¨1-n£©
+	private Date startTime;//¹ã¸æÆğĞ§Ê±¼ä
+	private Date endTime;//¹ã¸æÊ§Ğ§Ê±¼ä
+	private Integer createdBy;//´´½¨Õß
+	private Date creationDate;//´´½¨Ê±¼ä
+	private Integer modifyBy;//¸üĞÂÕß
+	private Date modifyDate;//¸üĞÂÊ±¼ä
 	
 	
 	public Integer getId() {

@@ -34,6 +34,7 @@
 	<link href='${pageContext.request.contextPath }/statics/localcss/appinfolist.css' rel='stylesheet'>
 </head>
 <body class="nav-md footer_fixed">
+	<input type="hidden" id="path" value="${pageContext.request.contextPath}"/>
 	<div class="container body">
 		<div class="main_container">
 			<div class="col-md-3 left_col menu_fixed">

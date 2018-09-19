@@ -83,8 +83,8 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content" style="display: block;">
-         <br>
-        <form class="form-horizontal form-label-left" action="appversionmodifysave" method="post" enctype="multipart/form-data">
+         <br>												
+        <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath }/dev/app/appversionmodifysave" method="post" enctype="multipart/form-data">
            <input type="hidden" name="id" id="id" value="${appVersion.id}">
            <input type="hidden" name="appId" id="appId" value="${appVersion.appId}">
           <div class="item form-group">

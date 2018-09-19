@@ -1,7 +1,7 @@
 function delfile(id){
 	$.ajax({
 		type:"GET",//请求类型
-		url:"delfile.json",//请求的url
+		url:$("#path").val()+"/dev/app/delfile.json",//请求的url
 		data:{id:id,flag:'apk'},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -32,7 +32,7 @@ $(function(){
 		$("#uploadfile").show();
 	}else{
 		$("#apkFile").append("<p>"+apkFileName+
-							"&nbsp;&nbsp;<a href=\""+downloadLink+"?m="+Math.random()+"\" >下载</a> &nbsp;&nbsp;" +
+							"&nbsp;&nbsp;<a href=\""+$("#path").val()+downloadLink+"?m="+Math.random()+"\" >下载</a> &nbsp;&nbsp;" +
 							"<a href=\"javascript:;\" onclick=\"delfile('"+id+"');\">删除</a></p>");
 	}
 

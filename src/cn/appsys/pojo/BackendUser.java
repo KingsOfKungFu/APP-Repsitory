@@ -3,16 +3,16 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class BackendUser {
-	private Integer id;//ä¸»é”®id
-	private String userCode;//ç”¨æˆ·ç¼–ç ï¼ˆç™»å½•è´¦å·ï¼‰
-	private String userName;//ç”¨æˆ·åç§°
-	private String userPassword;//ç”¨æˆ·å¯†ç 
-	private Integer userType;//ç”¨æˆ·è§’è‰²ç±»å‹id
-	private Integer createdBy;//åˆ›å»ºè€…
-	private Date creationDate;//åˆ›å»ºæ—¶é—´
-	private Integer modifyBy;//æ›´æ–°è€…
-	private Date modifyDate;//æ›´æ–°æ—¶é—´
-	private String userTypeName;//ç”¨æˆ·è§’è‰²ç±»å‹åç§°
+	private Integer id;//Ö÷¼üid
+	private String userCode;//ÓÃ»§±àÂë£¨µÇÂ¼ÕËºÅ£©
+	private String userName;//ÓÃ»§Ãû³Æ
+	private String userPassword;//ÓÃ»§ÃÜÂë
+	private Integer userType;//ÓÃ»§½ÇÉ«ÀàĞÍid
+	private Integer createdBy;//´´½¨Õß
+	private Date creationDate;//´´½¨Ê±¼ä
+	private Integer modifyBy;//¸üĞÂÕß
+	private Date modifyDate;//¸üĞÂÊ±¼ä
+	private String userTypeName;//ÓÃ»§½ÇÉ«ÀàĞÍÃû³Æ
 	
 	public String getUserTypeName() {
 		return userTypeName;

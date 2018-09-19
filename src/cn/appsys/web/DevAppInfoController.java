@@ -55,14 +55,162 @@ public class DevAppInfoController {
 	private AppVersionService appVersionService;
 	
 	/**
+	 * 版本修改页面上传文件
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("appversionmodifysave")
+	public String appversionmodifysave(@ModelAttribute AppVersion appVersion,
+			@RequestParam(value = "a_idPicPath",required = false) MultipartFile attach,
+			HttpServletRequest request) {
+		String IdPicPath = null;
+		String fileName = null;
+		if(!attach.isEmpty()) {
+			String path = request.getSession().getServletContext().getRealPath("statice"+File.separator+"uploadfiles");
+			String lodFileName = attach.getOriginalFilename();
+			String prefix = FilenameUtils.getExtension(lodFileName);
+			int filesize = 900000000;
+			if(attach.getSize() > filesize) {
+				
+				request.setAttribute("", "文件太大");
+				return "developer/appversionmodify";
+				
+			}else if(prefix.equalsIgnoreCase("apk")){
+				fileName = System.currentTimeMillis()+"_xxx.apk";
+				File targetFile = new File(path,fileName);
+				if(!targetFile.exists()) {
+					targetFile.mkdirs();
+				}
+				//保存
+				try {
+					attach.transferTo(targetFile);
+				} catch (IllegalStateException | IOException e) {
+					e.printStackTrace();
+				}
+				//拼接出数据库存储的相对路径
+				IdPicPath = File.separator+"statics"+File.separator+"uploadfiles"+File.separator+fileName;
+			}else {
+				
+				request.setAttribute("", "格式不正确");
+				return "developer/appversionmodify";
+				
+			}
+		}
+		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
+		//设置其他值(更新者，更新时间，文件名)
+		appVersion.setCreatedBy(devUser.getId());
+		appVersion.setCreationDate(new Date());
+		appVersion.setApkFileName(fileName);
+		
+		//保存
+		boolean flag = appVersionService.saveappVersion(appVersion);
+		if(!flag) {
+			return "developer/appversionmodify";
+		}
+		
+		return "developer/appinfolist";
+	}
+	
+	/**
+	 * 删除版本的安装包文件
+	 * @param id
+	 * @param flag
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("delfile.json")
+	public String delfile(@RequestParam Integer id,@RequestParam String flag,HttpServletRequest request) {
+		HashMap<Object, Object> hashMap = new HashMap<>();
+		AppVersion appVersion = appVersionService.getAppVersionByVersionId(id);
+		String path = request.getSession().getServletContext().getRealPath(appVersion.getApkLocPath());
+		File file = new File(path);
+		if(file.delete()) {
+			hashMap.put("result", "success");
+		}else {
+			hashMap.put("result", "failed");
+		}
+		
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * 跳转到版本修改页面
+	 * @return
+	 */
+	@RequestMapping("list/toappversionmodify")
+	public String appversionmodify(@RequestParam Integer vid,@RequestParam Integer aid,Model model) {
+		//对应app所有版本信息
+		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(aid);
+		//查询该app的最新版本信息
+		AppVersion appVersion = appVersionService.getAppVersionByVersionId(vid);
+		
+		model.addAttribute("appVersionList", appVersionList);
+		model.addAttribute("appVersion", appVersion);
+		
+		return "developer/appversionmodify";
+	}
+	
+	/**
 	 * 保存app信息修改
 	 * @return
 	 */
-	@RequestMapping("appinfolist")
+	@RequestMapping("appinfomodifysave")
 	public String appinfomodify() {
 		
 		return "";
 	}
+	
+	/**
+	 * app修改页面删除图片
+	 * @param id
+	 * @param flag
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("list/delfile")
+	public String delfile(HttpServletRequest request,@RequestParam Integer id,@RequestParam String flag) {
+		
+		HashMap<String, Object> hashMap = new HashMap<String,Object>();
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		String path = request.getSession().getServletContext().getRealPath(appInfo.getLogoLocPath());
+		File file = new File(path);
+		if(file.delete()) {
+			hashMap.put("result", "success");
+		}else {
+			hashMap.put("result", "failed");
+		}
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * app修改页面的三级联动
+	 * @param pid
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("categorylevellist.json")
+	public String categorylevellist(@RequestParam Integer pid) {
+		
+		List<AppCategory> data = appCategoryService.getAppCategoryListByParentId(pid);
+		 
+		return JSON.toJSONString(data);
+	}
+	
+	
+	/**
+	 * app修改页面加载平台列表
+	 * @param tcode
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("datadictionarylist")
+	public String datadictionarylist(@RequestParam String tcode) {
+		
+		List<DataDictionary> data = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
+		
+		return JSON.toJSONString(data);
+	}
+	
 	
 	/**
 	 * 跳转到app修改页面
@@ -70,10 +218,12 @@ public class DevAppInfoController {
 	 * @return
 	 */
 	@RequestMapping("/list/toappinfomodify")
-	public String toappinfomodify(@RequestParam Integer appinfoid) {
+	public String toappinfomodify(Model model,@RequestParam Integer appinfoid) {
 		
+		//app基本信息
 		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
 		if(appInfo != null) {
+			model.addAttribute("appInfo", appInfo);
 			return "developer/appinfomodify";
 		}
 		return "developer/appinfolist";
@@ -91,7 +241,8 @@ public class DevAppInfoController {
 		
 		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
-		List<AppVersion> versionList = appVersionService.getVersionByAppInfoId(id);
+														//该方法重造过可能会有bug
+		List<AppVersion> versionList = appVersionService.getAppVersionByInfoid(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
