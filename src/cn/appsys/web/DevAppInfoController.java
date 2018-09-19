@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.sun.scenario.effect.Blend.Mode;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 
 import cn.appsys.pojo.AppCategory;
 import cn.appsys.pojo.AppInfo;
@@ -54,6 +55,7 @@ public class DevAppInfoController {
 	@Resource
 	private AppVersionService appVersionService;
 	
+
 	@RequestMapping("/appinfoaddsave")
 	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
 								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
@@ -273,61 +275,95 @@ public class DevAppInfoController {
 		return "developer/appinfomodify";
 	}
 	
+
+	/**
+	 * ����app��Ϣ�޸�
+	 * @return
+	 */
+	@RequestMapping("appinfolist")
+	public String appinfomodify() {
+		
+		return "";
+	}
+	
+	/**
+	 * ��ת��app�޸�ҳ��
+	 * @param appinfoid
+	 * @return
+	 */
+	@RequestMapping("/list/toappinfomodify")
+	public String toappinfomodify(@RequestParam Integer appinfoid) {
+		
+		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
+		if(appInfo != null) {
+			return "developer/appinfomodify";
+		}
+		return "developer/appinfolist";
+	}
+	
+	/**
+	 * ɾ��app��Ϣ
+	 * @param model
+	 * @param id
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("list/delapp")
-	public String delapp(Model model,Integer id) {
+	public String delapp(HttpServletRequest request,Model model,Integer id) {
 		
+		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
 		List<AppVersion> versionList = appVersionService.getVersionByAppInfoId(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
-			//先删文件  遍历versionList删除每个版本的文件 
+			//��ɾ�ļ�  ����versionListɾ��ÿ���汾���ļ� 
 			for (AppVersion appVersion : versionList) {
 				if(appVersion.getApkLocPath() != null) {
-					File file = new File(appVersion.getApkLocPath());
-					//flag = file.delete();
-					//版本文件删除失败    
-					/*if(flag == false) {
+					File file = new File(path+File.separator+appVersion.getApkFileName());
+					flag = file.delete();
+					//�汾�ļ�ɾ��ʧ��   
+					if(flag == false) {
 						hashMap.put("delResult", "false");
 						break;
-					}*/
+					}
 				}
-				//删除版本
+				//ɾ���汾
 				//flag = appVersionService.delVersionByInfoId(id);
 			}
-			/*if(flag == false) {
+			if(flag == false && versionList.size() > 0) {
 				hashMap.put("delResult", "false");
-				//回到appinfolist页面
+				//�ص�appinfolistҳ��
 				return "developer/appinfolist";
-			}*/
-			//删除app图片     路径对不上删不掉
-			if(appInfo.getLogoLocPath() != null) {
-				File file = new File(appInfo.getLogoLocPath());
-				//flag = file.delete();
 			}
-			/*if(flag == false) {
+			//ɾ��appͼƬ     ·���Բ���ɾ����
+			if(appInfo.getLogoLocPath() != null) {
+				//ƴ�ӳ�ͼƬ·������ɾ��ͼƬ
+				File file = new File(request.getSession().getServletContext().getRealPath(appInfo.getLogoLocPath()));
+				flag = file.delete();
+			}
+			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//回到appinfolist页面
+				//�ص�appinfolistҳ��
 				return "developer/appinfolist";
-			}*/
-			//上面的都删除成功了   删除app信息
+			}
+			//����Ķ�ɾ���ɹ���   ɾ��app��Ϣ
 			if(flag) {
 			 	flag = appInfoService.dealpp(id);
 			}
 			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//回到appinfolist页面
+				//�ص�appinfolistҳ��
 				return "developer/appinfolist";
 			}
 			hashMap.put("delResult", "true");
 		}
-		//跳转到appinfolst页面
+		//��ת��appinfolstҳ��
 		return JSON.toJSONString(hashMap);
 	}
 	
 	/**
-	 * 查看app详细信息
+	 * �鿴app��ϸ��Ϣ
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -343,64 +379,63 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * 增加版本
+	 * ���Ӱ汾
 	 * @param request
 	 * @param appVersion
 	 * @param attach
 	 * @return
 	 */
-	@RequestMapping("addversionsave")
+	@RequestMapping("/addversionsave")
 	public String addversionsave(HttpServletRequest request,@ModelAttribute AppVersion appVersion,
 			@RequestParam(value="a_downloadLink",required=false) MultipartFile attach) {
 		String IdPicPath = null;
 		String fileName = null;
 		String path = null;
-		//判断文件是否为空
+		//�ж��ļ��Ƿ�Ϊ��
 		if(!attach.isEmpty()) {
-			//文件的服务器存储路径
-			path = request.getServletContext().getRealPath("statics"+File.separator+"uploadfils");
-			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfils");
+			//�ļ��ı��ش洢·��
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
 			if(attach.getSize() > filesize) {
-				request.getSession().setAttribute("fileUploadError", "上传文件不能超过500kb");
-				//返回增加版本页面
+				request.getSession().setAttribute("fileUploadError", "�ϴ��ļ����ܳ���500kb");
+				//�������Ӱ汾ҳ��
 				return "developer/appversionadd";
 			}else if(prefix.equalsIgnoreCase("apk")){
-				//新文件名
+				//���ļ���
 				fileName = System.currentTimeMillis()+"_xxx.apk";
 				File targetFile = new File(path,fileName);
 				if(!targetFile.exists()) {
 					targetFile.mkdirs();
 				}
-				//保存
+				//����
 				try {
 					attach.transferTo(targetFile);
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					request.setAttribute("fileUploadError", "上传失败");
+					request.setAttribute("fileUploadError", "�ϴ�ʧ��");
 					return "developer/appversionadd";
 				}
-				IdPicPath = path+File.separator+fileName;
-				
+				//ƴ�ӳ����ݿ�洢�����·��
+				IdPicPath = File.separator+"statics"+File.separator+"uploadfiles"+File.separator+fileName;
 			}else {
-				request.setAttribute("fileUploadError", "上传文件格式不正确");
+				request.setAttribute("fileUploadError", "�ϴ��ļ���ʽ����ȷ");
 				return "developer/appversionadd";
 			}
 		}
 		
-		//完善对象值
-		//下载链接  文件存储路径+文件名
-		appVersion.setDownloadLink(path+fileName);
-		//创建者
+		//���ƶ���ֵ
+		//��������  �ļ��洢·��+�ļ���
+		appVersion.setDownloadLink(IdPicPath);
+		//������
 		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
 		appVersion.setCreatedBy(devUser.getCreatedBy());
-		//创建时间
+		//����ʱ��
 		appVersion.setCreationDate(new Date());
-		//apk文件的服务器存储路径
-		appVersion.setApkLocPath(path);
-		//上传的apk文件名称
+		//apk�ļ��ķ������洢·��    �޸ĳ����·������������
+		appVersion.setApkLocPath(IdPicPath);
+		//�ϴ���apk�ļ�����
 		appVersion.setApkFileName(fileName);
 		
 		if(!appVersionService.addVersion(appVersion)) {
@@ -411,25 +446,26 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * 根据appId查询版本列表
+	 * ����appId��ѯ�汾�б�,��ת��appversionaddҳ��
 	 * @param model
 	 * @param appinfoid
 	 * @return
 	 */
 	@RequestMapping("list/appversionadd/{appinfoid}")
-	public String appversionadd(Model model,@PathVariable Integer appinfoid) {
+	public String appversionadd(Model model,@PathVariable Integer appinfoid,HttpServletRequest request) {
 		
 		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(appinfoid);
 		if(appVersionList != null) {
 			model.addAttribute("appVersionList",appVersionList);
 		}
+		model.addAttribute("appinfoid",appinfoid);
 		return "developer/appversionadd";
 	}
 	
 	
 	
 	/**
-	 * 根据父if查询分类列表
+	 * ���ݸ�if��ѯ�����б�
 	 * @param pid
 	 * @return
 	 */
@@ -441,7 +477,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * 挑转到首页
+	 * ��ת����ҳ
 	 * @param model
 	 * @param queryAppInfoVO
 	 * @return
@@ -460,15 +496,15 @@ public class DevAppInfoController {
 		
 		appInfoService.getAppInfoList(pageBean,queryAppInfoVO);
 		
-		//查询app状态
+		//��ѯapp״̬
 		List<DataDictionary> statusList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_STATUS");
-		//查询app所属平台
+		//��ѯapp����ƽ̨
 		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
-		//查询一级分类
+		//��ѯһ������
 		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(null);
 		
-		// 完善分类的回显
-		// 如果传了一级分类  说明你选择过  所以肯定触发过三级联动  认为应该将二级分类全部查询
+		// ���Ʒ���Ļ���
+		// �������һ������  ˵����ѡ���  ���Կ϶���������������  ��ΪӦ�ý���������ȫ����ѯ
 		if(queryAppInfoVO.getQueryCategoryLevel1() != null) {
 			List<AppCategory> categoryLevel2List = appCategoryService.getAppCategoryListByParentId(queryAppInfoVO.getQueryCategoryLevel1());
 			model.addAttribute("categoryLevel2List", categoryLevel2List);
