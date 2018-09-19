@@ -2,6 +2,7 @@ package cn.appsys.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,225 @@ public class DevAppInfoController {
 	
 	@Resource
 	private AppVersionService appVersionService;
+	
+	@RequestMapping("/appinfoaddsave")
+	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
+								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
+		
+		String path = null;
+		String logoPicPath =  null;
+		String logoLocPath =  null; 
+		if (!multipartFile.isEmpty()) {
+			//获取绝对路径
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
+			//获取文件名
+			String fileName = multipartFile.getOriginalFilename();
+			//获取文件名的扩展名
+			String extension = FilenameUtils.getExtension(fileName);
+			//设置文件上传大小
+			int fileSize = 50000000;
+			//设置文件上传格式
+			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
+			if (fileSize < multipartFile.getSize()) {
+				request.setAttribute("fileUploadError", "上传文件超过大小限制");
+				return "developer/appinfoadd";
+			}else if (!asList.contains(extension)) {
+				request.setAttribute("fileUploadError", "不支持此种文件格式！");
+				return "developer/appinfoadd";
+			}else {
+				//重命名
+				String newFileName = System.currentTimeMillis()+"logo."+extension;
+				//文件上传
+				File file = new File(path+File.separator+newFileName);
+				try {
+					multipartFile.transferTo(file);
+					//获取绝对路径
+					logoLocPath = path+File.separator+newFileName;
+					//获取相对路径
+					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		appInfo.setLogoPicPath(logoPicPath);
+		appInfo.setLogoLocPath(logoLocPath);
+		//获取当前用户
+		DevUser devUser = (DevUser)request.getSession().getAttribute("loginUser");
+		appInfo.setCreatedBy(devUser.getId());
+		appInfo.setCreationDate(new Date());
+		appInfo.setStatus(1);
+		boolean flag = appInfoService.getAppInfoAdd(appInfo);
+		if (!flag) {
+			return "developer/appinfoadd";
+		}
+		return "redirect:/dev/app/list";
+	}
+	
+	/**
+	 * 检查APKName名称
+	 * @param APKName
+	 * @return
+	 */
+	@RequestMapping("apkexist/{APKName}")
+	@ResponseBody
+	public String checkAPKName(@PathVariable String APKName) {
+		HashMap<String, Object> hashMap = new HashMap<>();
+		AppInfo appInfo = appInfoService.getAppInfoByAPKName(APKName);
+		String result = "exist";
+		if (appInfo == null) {
+			result = "noexist";
+		}
+		hashMap.put("result", result);
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * 跳转到app增加页面
+	 * @return
+	 */
+	@RequestMapping("appinfoadd")
+	public String toAppInfoAdd() {
+		return "developer/appinfoadd";
+	}
+	
+	/**
+	 * 修改app信息
+	 * @param session
+	 * @param appInfo
+	 * @return
+	 */
+	@RequestMapping("/appinfomodifysave")
+	public String appInfoModifySave(HttpServletRequest request,@ModelAttribute AppInfo appInfo,
+									@RequestParam(value="attach",required=false)MultipartFile multipartFile) {
+		String path = null;
+		String logoPicPath = null;
+		String logoLocPath = null;
+		if (!multipartFile.isEmpty()) {
+			//获取绝对路径
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
+			//获取文件名
+			String fileName = multipartFile.getOriginalFilename();
+			//获取文件名的扩展名
+			String extension = FilenameUtils.getExtension(fileName);
+			//设置文件上传大小
+			int fileSize = 50000000;
+			//设置文件上传格式
+			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
+			if (fileSize < multipartFile.getSize()) {
+				request.setAttribute("fileUploadError", "上传文件超过大小限制");
+				return "developer/appinfoadd";
+			}else if (!asList.contains(extension)) {
+				request.setAttribute("fileUploadError", "不支持此种文件格式！");
+				return "developer/appinfoadd";
+			}else {
+				//重命名
+				String newFileName = System.currentTimeMillis()+"logo."+extension;
+				//文件上传
+				File file = new File(path+File.separator+newFileName);
+				try {
+					multipartFile.transferTo(file);
+					//获取绝对路径
+					logoLocPath = path+File.separator+newFileName;
+					//获取相对路径
+					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		//获取当前登录用户
+		DevUser devUser = (DevUser) request.getSession().getAttribute("loginUser");
+		appInfo.setModifyBy(devUser.getId());
+		appInfo.setModifyDate(new Date());
+		appInfo.setLogoPicPath(logoPicPath);
+		appInfo.setLogoLocPath(logoLocPath);
+		boolean flag = appInfoService.appInfoModify(appInfo);
+		if (!flag) {
+			return "developer/appinfomodify";
+		}
+		return "redirect:/dev/app/list";
+	}
+	
+	/**
+	 * 修改页面删除图片 未完成
+	 * @param id
+	 * @param flag
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/appinfomodify/delfile")
+	public String deFile(Integer id,String flag) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		String result = "";
+		 if ("logo".equals(flag)) { //删除logo图片
+			 if (appInfo.getLogoLocPath()!= null) {
+					File file = new File(appInfo.getLogoLocPath());
+					if (file.exists()) {
+						if (file.delete()) {
+							//删除数据库的logo图片，实际上更新数据，把logoPicPath清空
+							boolean boo = appInfoService.deleteLogoPicPath(id);
+							if (boo) {
+								result = "success";
+							}
+						}	
+					}
+				}else {
+					result = "failed";
+				}
+		}
+		
+		hashMap.put("result", result);
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * ajax加载分类列表
+	 * @param pid
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value= {"appinfomodify/categorylevellist","categorylevellist"})
+	public String categoryLevelList(Integer pid) {
+		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(pid);
+		return JSON.toJSONString(categoryLevel1List);
+	}
+	
+	/**
+	 * ajax加载所属平台列表
+	 * @param typeCode
+	 * @return
+	 */
+	@RequestMapping(value={"appinfomodify/datadictionarylist/{typeCode}","datadictionarylist/{typeCode}"})
+	//@RequestMapping("datadictionarylist")
+	@ResponseBody
+	public String dataDictionaryList(@PathVariable String typeCode) {
+		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
+		return JSON.toJSONString(flatFormList);
+	}
+	
+	/**
+	 * 跳转到修改app基础信息页面
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("appinfomodify/{id}")
+	public String appInfoModify(Model model ,@PathVariable Integer id) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		model.addAttribute("appInfo", appInfo);
+		return "developer/appinfomodify";
+	}
 	
 	@ResponseBody
 	@RequestMapping("list/delapp")

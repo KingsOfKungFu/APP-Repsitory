@@ -12,20 +12,20 @@ import cn.appsys.pojo.QueryAppInfoVO;
 public interface AppInfoMapper {
 	
 	/**
-	 * ¸ù¾ÝinfoidÉ¾³ýapp
+	 * ï¿½ï¿½ï¿½ï¿½infoidÉ¾ï¿½ï¿½app
 	 * @param id
 	 * @return
 	 */
 	int dealpp(@Param("id") Integer id);
 	
 	/**
-	 * ¸ù¾Ýid²éÑ¯appÐÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½Ñ¯appï¿½ï¿½Ï¢
 	 * @param appinfoid
 	 * @return
 	 */
 	AppInfo getAppInfoById(@Param("appinfoid")Integer appinfoid);
 	/**
-	 * ¸ù¾ÝÌõ¼þ²éÑ¯×Ü¼ÇÂ¼Êý
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½Ü¼ï¿½Â¼ï¿½ï¿½
 	 * @param queryAppInfoV
 	 * @return
 	 */
@@ -33,12 +33,20 @@ public interface AppInfoMapper {
 	int getAppInfoCount(QueryAppInfoVO queryAppInfoVO);
 	
 	/**
-	 * ¸ù¾ÝÌõ¼þ²éÑ¯Ã¿Ò³¼ÇÂ¼¼¯ºÏ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯Ã¿Ò³ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
 	 * @param queryAppInfoV
 	 * @return
 	 */
 	/*List<AppInfo> getAppInfoList(@Param("queryAppInfoVO") QueryAppInfoVO queryAppInfoVO);*/
 	List<AppInfo> getAppInfoList(QueryAppInfoVO queryAppInfoVO);
+
+	int appInfoModify(AppInfo appInfo);
+
+	AppInfo getAppInfoByAPKName(String aPKName);
+
+	int getAppInfoAdd(AppInfo appInfo);
+
+	int updateLogoPicPath(Integer id);
 	
 	
 }

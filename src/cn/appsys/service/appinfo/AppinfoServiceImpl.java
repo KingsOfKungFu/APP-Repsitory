@@ -50,4 +50,40 @@ public class AppinfoServiceImpl implements AppinfoService{
 		List<AppInfo> result = appInfoMapper.getAppInfoList(queryAppInfoVO);
 		pageBean.setResult(result);
 	}
+
+
+	@Override
+	public boolean appInfoModify(AppInfo appInfo) {
+		boolean flag = false;
+		if (appInfoMapper.appInfoModify(appInfo) > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+
+	@Override
+	public AppInfo getAppInfoByAPKName(String APKName) {
+		return appInfoMapper.getAppInfoByAPKName(APKName);
+	}
+
+
+	@Override
+	public boolean getAppInfoAdd(AppInfo appInfo) {
+		boolean result = false;
+		if (appInfoMapper.getAppInfoAdd(appInfo) > 0) {
+			result = true;
+		}
+		return result;
+	}
+
+
+	@Override
+	public boolean deleteLogoPicPath(Integer id) {
+		boolean result = false;
+		if(appInfoMapper.updateLogoPicPath(id) > 0) {
+			result = true;
+		}
+		return result;
+	}
 }
