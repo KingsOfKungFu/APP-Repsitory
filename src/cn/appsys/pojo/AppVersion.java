@@ -4,22 +4,22 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class AppVersion {
-	private Integer id;//Ö÷¼üid
+	private Integer id;//ä¸»é”®id
 	private Integer appId;//appId
-	private String versionNo;//°æ±¾ºÅ
-	private String versionInfo;//°æ±¾ÃèÊö
-	private Integer publishStatus;//·¢²¼×´Ì¬id
-	private String downloadLink;//apkÎÄ¼şÏÂÔØÁ´½Ó
-	private BigDecimal versionSize;//°æ±¾´óĞ¡
-	private Integer createdBy;//´´½¨Õß
-	private Date creationDate;//´´½¨Ê±¼ä
-	private Integer modifyBy;//¸üĞÂÕß
-	private Date modifyDate;//¸üĞÂÊ±¼ä
-	private String apkLocPath;//apkÎÄ¼şµÄ·şÎñÆ÷´æ´¢Â·¾¶
+	private String versionNo;//ç‰ˆæœ¬å·
+	private String versionInfo;//ç‰ˆæœ¬æè¿°
+	private Integer publishStatus;//å‘å¸ƒçŠ¶æ€id
+	private String downloadLink;//apkæ–‡ä»¶ä¸‹è½½é“¾æ¥
+	private BigDecimal versionSize;//ç‰ˆæœ¬å¤§å°
+	private Integer createdBy;//åˆ›å»ºè€…
+	private Date creationDate;//åˆ›å»ºæ—¶é—´
+	private Integer modifyBy;//æ›´æ–°è€…
+	private Date modifyDate;//æ›´æ–°æ—¶é—´
+	private String apkLocPath;//apkæ–‡ä»¶çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
 	
-	private String appName;//APPÈí¼şÃû³Æ
-	private String publishStatusName;//·¢²¼×´Ì¬Ãû³Æ
-	private String apkFileName;//ÉÏ´«µÄapkÎÄ¼şÃû³Æ
+	private String appName;//APPè½¯ä»¶åç§°
+	private String publishStatusName;//å‘å¸ƒçŠ¶æ€åç§°
+	private String apkFileName;//ä¸Šä¼ çš„apkæ–‡ä»¶åç§°
 	
 	public String getApkFileName() {
 		return apkFileName;

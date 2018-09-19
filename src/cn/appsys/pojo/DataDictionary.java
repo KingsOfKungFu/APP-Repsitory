@@ -3,15 +3,15 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class DataDictionary {
-	private Integer id;//Ö÷¼üid
-	private String typeCode;//ÀàĞÍ±àÂë
-	private String typeName;//ÀàĞÍÃû³Æ
-	private Integer valueId;//ÀàĞÍÖµID
-	private String valueName;//ÀàĞÍÖµname
-	private Integer createdBy;//´´½¨Õß
-	private Date creationDate;//´´½¨Ê±¼ä
-	private Integer modifyBy;//¸üĞÂÕß
-	private Date modifyDate;//¸üĞÂÊ±¼ä
+	private Integer id;//ä¸»é”®id
+	private String typeCode;//ç±»å‹ç¼–ç 
+	private String typeName;//ç±»å‹åç§°
+	private Integer valueId;//ç±»å‹å€¼ID
+	private String valueName;//ç±»å‹å€¼name
+	private Integer createdBy;//åˆ›å»ºè€…
+	private Date creationDate;//åˆ›å»ºæ—¶é—´
+	private Integer modifyBy;//æ›´æ–°è€…
+	private Date modifyDate;//æ›´æ–°æ—¶é—´
 	
 	public Integer getId() {
 		return id;

@@ -3,14 +3,14 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class AppCategory {
-	private Integer id;//Ö÷¼üid
-	private String categoryCode;//·ÖÀà±àÂë
-	private String categoryName;//·ÖÀàÃû³Æ
-	private Integer parentId;//¸¸¼¶½Úµãid
-	private Integer createdBy;//´´½¨Õß
-	private Date creationDate;//´´½¨Ê±¼ä
-	private Integer modifyBy;//¸üĞÂÕß
-	private Date modifyDate;//¸üĞÂÊ±¼ä
+	private Integer id;//ä¸»é”®id
+	private String categoryCode;//åˆ†ç±»ç¼–ç 
+	private String categoryName;//åˆ†ç±»åç§°
+	private Integer parentId;//çˆ¶çº§èŠ‚ç‚¹id
+	private Integer createdBy;//åˆ›å»ºè€…
+	private Date creationDate;//åˆ›å»ºæ—¶é—´
+	private Integer modifyBy;//æ›´æ–°è€…
+	private Date modifyDate;//æ›´æ–°æ—¶é—´
 	
 	public Integer getId() {
 		return id;

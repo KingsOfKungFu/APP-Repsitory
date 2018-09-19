@@ -3,16 +3,16 @@ package cn.appsys.pojo;
 import java.util.Date;
 
 public class DevUser {
-	private Integer id;//Ö÷¼üid
-	private String devCode;//¿ª·¢ÕßÕÊºÅ(ÏµÍ³µÇÂ¼ÕËºÅ)
-	private String devName;//¿ª·¢ÕßÃû³Æ
-	private String devPassword;//¿ª·¢ÕßÃÜÂë
-	private String devEmail;//¿ª·¢ÕßÓÊÏä
-	private String devInfo;	//¿ª·¢Õß¼ò½é
-	private Integer createdBy;//´´½¨Õß
-	private Date creationDate;//´´½¨Ê±¼ä
-	private Integer modifyBy;//¸üĞÂÕß
-	private Date modifyDate;//¸üĞÂÊ±¼ä
+	private Integer id;//ä¸»é”®id
+	private String devCode;//å¼€å‘è€…å¸å·(ç³»ç»Ÿç™»å½•è´¦å·)
+	private String devName;//å¼€å‘è€…åç§°
+	private String devPassword;//å¼€å‘è€…å¯†ç 
+	private String devEmail;//å¼€å‘è€…é‚®ç®±
+	private String devInfo;	//å¼€å‘è€…ç®€ä»‹
+	private Integer createdBy;//åˆ›å»ºè€…
+	private Date creationDate;//åˆ›å»ºæ—¶é—´
+	private Integer modifyBy;//æ›´æ–°è€…
+	private Date modifyDate;//æ›´æ–°æ—¶é—´
 	
 	public Integer getId() {
 		return id;

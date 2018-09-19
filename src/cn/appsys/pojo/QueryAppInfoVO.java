@@ -2,15 +2,17 @@ package cn.appsys.pojo;
 
 public class QueryAppInfoVO {
 	
-	private String querySoftwareName; // Èí¼şÃû³Æ
-	private Integer queryStatus; // ×´Ì¬
-	private Integer queryFlatformId; // Æ½Ì¨
-	private Integer queryCategoryLevel1; // 1¼¶·ÖÀà
-	private Integer queryCategoryLevel2; // 2¼¶·ÖÀà
-	private Integer queryCategoryLevel3; // 3¼¶·ÖÀà
-	private Integer pageIndex; // µ±Ç°Ò³
-	private Integer startIndex; // ÆğÊ¼Ò³
-	private Integer pageSize; // Ã¿Ò³ÏÔÊ¾ÌõÊı
+	private String querySoftwareName; // è½¯ä»¶åç§°
+	private Integer queryStatus; // çŠ¶æ€
+	private Integer queryFlatformId; // å¹³å°
+	private Integer queryCategoryLevel1; // 1çº§åˆ†ç±»
+	private Integer queryCategoryLevel2; // 2çº§åˆ†ç±»
+	private Integer queryCategoryLevel3; // 3çº§åˆ†ç±»
+	private Integer pageIndex; // å½“å‰é¡µ
+	private Integer startIndex; // èµ·å§‹é¡µ
+	private Integer pageSize; // æ¯é¡µæ˜¾ç¤ºæ¡æ•°
+	
+	
 	public QueryAppInfoVO(String querySoftwareName, Integer queryStatus, Integer queryFlatformId,
 			Integer queryCategoryLevel1, Integer queryCategoryLevel2, Integer queryCategoryLevel3, Integer pageIndex,
 			Integer startIndex, Integer pageSize) {
