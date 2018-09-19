@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@include file="common/header.jsp"%>
 <div class="clearfix"></div>
@@ -6,11 +6,11 @@
   <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>修改APP基础信息 <i class="fa fa-user"></i><small>${devUserSession.devName}</small></h2>
+        <h2>修改APP基础信息 <i class="fa fa-user"></i><small>${loginUser.devName}</small></h2>
              <div class="clearfix"></div>
       </div>
       <div class="x_content">
-        <form class="form-horizontal form-label-left" action="appinfomodifysave" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath }/dev/app/appinfomodifysave" method="post" enctype="multipart/form-data">
           <input type="hidden" name="id" id="id" value="${appInfo.id}">
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">软件名称 <span class="required">*</span>

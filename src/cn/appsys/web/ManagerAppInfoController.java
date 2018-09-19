@@ -42,6 +42,11 @@ public class ManagerAppInfoController {
 	private ManagerAppVersionService managerAppVersionService;
 	
 	
+	/**
+	 * 对于APP的审核的判断
+	 * @param appInfo
+	 * @return
+	 */
 	@RequestMapping("/checksave")
 	public String doCheckSave(@ModelAttribute AppInfo appInfo) {
 		boolean flag = managerAppInfoService.updataVersion(appInfo.getStatus(),appInfo.getId());

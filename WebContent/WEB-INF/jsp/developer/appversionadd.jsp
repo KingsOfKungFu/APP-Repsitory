@@ -65,7 +65,9 @@
 									<td>
 									<a href="${appVersion.downloadLink }">${appVersion.apkFileName }</a>
 									</td>
-									<td><fmt:formatDate value="${appVersion.modifyDate }" pattern="yyyy-MM-dd"/></td>
+									<td>
+										<fmt:formatDate value="${appVersion.modifyDate }" pattern="yyyy-MM-dd"/>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -85,7 +87,9 @@
         <div class="x_content" style="display: block;">
          <br>
         <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath }/dev/app/addversionsave" method="post" enctype="multipart/form-data">
-           <input type="hidden" name="appId" name="appId" value="${appVersion.appId}">
+        	<!-- 版本appID -->
+           <%-- <input type="hidden" name="appId" name="appId" value="${appVersion.appId}"> --%>
+           <input type="hidden" name="appId" name="appId" value="${appinfoid}">
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">版本号 <span class="required">*</span>
             </label>
