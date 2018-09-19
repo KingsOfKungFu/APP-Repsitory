@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.sun.scenario.effect.Blend.Mode;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
 
 import cn.appsys.pojo.AppCategory;
 import cn.appsys.pojo.AppInfo;
@@ -53,61 +54,94 @@ public class DevAppInfoController {
 	@Resource
 	private AppVersionService appVersionService;
 	
+	/**
+	 * ±£´æappĞÅÏ¢ĞŞ¸Ä
+	 * @return
+	 */
+	@RequestMapping("appinfolist")
+	public String appinfomodify() {
+		
+		return "";
+	}
+	
+	/**
+	 * Ìø×ªµ½appĞŞ¸ÄÒ³Ãæ
+	 * @param appinfoid
+	 * @return
+	 */
+	@RequestMapping("/list/toappinfomodify")
+	public String toappinfomodify(@RequestParam Integer appinfoid) {
+		
+		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
+		if(appInfo != null) {
+			return "developer/appinfomodify";
+		}
+		return "developer/appinfolist";
+	}
+	
+	/**
+	 * É¾³ıappĞÅÏ¢
+	 * @param model
+	 * @param id
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("list/delapp")
-	public String delapp(Model model,Integer id) {
+	public String delapp(HttpServletRequest request,Model model,Integer id) {
 		
+		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
 		List<AppVersion> versionList = appVersionService.getVersionByAppInfoId(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
-			//å…ˆåˆ æ–‡ä»¶  éå†versionListåˆ é™¤æ¯ä¸ªç‰ˆæœ¬çš„æ–‡ä»¶ 
+			//ÏÈÉ¾ÎÄ¼ş  ±éÀúversionListÉ¾³ıÃ¿¸ö°æ±¾µÄÎÄ¼ş 
 			for (AppVersion appVersion : versionList) {
 				if(appVersion.getApkLocPath() != null) {
-					File file = new File(appVersion.getApkLocPath());
-					//flag = file.delete();
-					//ç‰ˆæœ¬æ–‡ä»¶åˆ é™¤å¤±è´¥    
-					/*if(flag == false) {
+					File file = new File(path+File.separator+appVersion.getApkFileName());
+					flag = file.delete();
+					//°æ±¾ÎÄ¼şÉ¾³ıÊ§°Ü   
+					if(flag == false) {
 						hashMap.put("delResult", "false");
 						break;
-					}*/
+					}
 				}
-				//åˆ é™¤ç‰ˆæœ¬
+				//É¾³ı°æ±¾
 				//flag = appVersionService.delVersionByInfoId(id);
 			}
-			/*if(flag == false) {
+			if(flag == false && versionList.size() > 0) {
 				hashMap.put("delResult", "false");
-				//å›åˆ°appinfolisté¡µé¢
+				//»Øµ½appinfolistÒ³Ãæ
 				return "developer/appinfolist";
-			}*/
-			//åˆ é™¤appå›¾ç‰‡     è·¯å¾„å¯¹ä¸ä¸Šåˆ ä¸æ‰
-			if(appInfo.getLogoLocPath() != null) {
-				File file = new File(appInfo.getLogoLocPath());
-				//flag = file.delete();
 			}
-			/*if(flag == false) {
+			//É¾³ıappÍ¼Æ¬     Â·¾¶¶Ô²»ÉÏÉ¾²»µô
+			if(appInfo.getLogoLocPath() != null) {
+				//Æ´½Ó³öÍ¼Æ¬Â·¾¶£¬²¢É¾³ıÍ¼Æ¬
+				File file = new File(request.getSession().getServletContext().getRealPath(appInfo.getLogoLocPath()));
+				flag = file.delete();
+			}
+			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//å›åˆ°appinfolisté¡µé¢
+				//»Øµ½appinfolistÒ³Ãæ
 				return "developer/appinfolist";
-			}*/
-			//ä¸Šé¢çš„éƒ½åˆ é™¤æˆåŠŸäº†   åˆ é™¤appä¿¡æ¯
+			}
+			//ÉÏÃæµÄ¶¼É¾³ı³É¹¦ÁË   É¾³ıappĞÅÏ¢
 			if(flag) {
 			 	flag = appInfoService.dealpp(id);
 			}
 			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//å›åˆ°appinfolisté¡µé¢
+				//»Øµ½appinfolistÒ³Ãæ
 				return "developer/appinfolist";
 			}
 			hashMap.put("delResult", "true");
 		}
-		//è·³è½¬åˆ°appinfolsté¡µé¢
+		//Ìø×ªµ½appinfolstÒ³Ãæ
 		return JSON.toJSONString(hashMap);
 	}
 	
 	/**
-	 * æŸ¥çœ‹appè¯¦ç»†ä¿¡æ¯
+	 * ²é¿´appÏêÏ¸ĞÅÏ¢
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -123,64 +157,63 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * å¢åŠ ç‰ˆæœ¬
+	 * Ôö¼Ó°æ±¾
 	 * @param request
 	 * @param appVersion
 	 * @param attach
 	 * @return
 	 */
-	@RequestMapping("addversionsave")
+	@RequestMapping("/addversionsave")
 	public String addversionsave(HttpServletRequest request,@ModelAttribute AppVersion appVersion,
 			@RequestParam(value="a_downloadLink",required=false) MultipartFile attach) {
 		String IdPicPath = null;
 		String fileName = null;
 		String path = null;
-		//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦ä¸ºç©º
+		//ÅĞ¶ÏÎÄ¼şÊÇ·ñÎª¿Õ
 		if(!attach.isEmpty()) {
-			//æ–‡ä»¶çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
-			path = request.getServletContext().getRealPath("statics"+File.separator+"uploadfils");
-			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfils");
+			//ÎÄ¼şµÄ±¾µØ´æ´¢Â·¾¶
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
 			if(attach.getSize() > filesize) {
-				request.getSession().setAttribute("fileUploadError", "ä¸Šä¼ æ–‡ä»¶ä¸èƒ½è¶…è¿‡500kb");
-				//è¿”å›å¢åŠ ç‰ˆæœ¬é¡µé¢
+				request.getSession().setAttribute("fileUploadError", "ÉÏ´«ÎÄ¼ş²»ÄÜ³¬¹ı500kb");
+				//·µ»ØÔö¼Ó°æ±¾Ò³Ãæ
 				return "developer/appversionadd";
 			}else if(prefix.equalsIgnoreCase("apk")){
-				//æ–°æ–‡ä»¶å
+				//ĞÂÎÄ¼şÃû
 				fileName = System.currentTimeMillis()+"_xxx.apk";
 				File targetFile = new File(path,fileName);
 				if(!targetFile.exists()) {
 					targetFile.mkdirs();
 				}
-				//ä¿å­˜
+				//±£´æ
 				try {
 					attach.transferTo(targetFile);
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					request.setAttribute("fileUploadError", "ä¸Šä¼ å¤±è´¥");
+					request.setAttribute("fileUploadError", "ÉÏ´«Ê§°Ü");
 					return "developer/appversionadd";
 				}
-				IdPicPath = path+File.separator+fileName;
-				
+				//Æ´½Ó³öÊı¾İ¿â´æ´¢µÄÏà¶ÔÂ·¾¶
+				IdPicPath = File.separator+"statics"+File.separator+"uploadfiles"+File.separator+fileName;
 			}else {
-				request.setAttribute("fileUploadError", "ä¸Šä¼ æ–‡ä»¶æ ¼å¼ä¸æ­£ç¡®");
+				request.setAttribute("fileUploadError", "ÉÏ´«ÎÄ¼ş¸ñÊ½²»ÕıÈ·");
 				return "developer/appversionadd";
 			}
 		}
 		
-		//å®Œå–„å¯¹è±¡å€¼
-		//ä¸‹è½½é“¾æ¥  æ–‡ä»¶å­˜å‚¨è·¯å¾„+æ–‡ä»¶å
-		appVersion.setDownloadLink(path+fileName);
-		//åˆ›å»ºè€…
+		//ÍêÉÆ¶ÔÏóÖµ
+		//ÏÂÔØÁ´½Ó  ÎÄ¼ş´æ´¢Â·¾¶+ÎÄ¼şÃû
+		appVersion.setDownloadLink(IdPicPath);
+		//´´½¨Õß
 		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
 		appVersion.setCreatedBy(devUser.getCreatedBy());
-		//åˆ›å»ºæ—¶é—´
+		//´´½¨Ê±¼ä
 		appVersion.setCreationDate(new Date());
-		//apkæ–‡ä»¶çš„æœåŠ¡å™¨å­˜å‚¨è·¯å¾„
-		appVersion.setApkLocPath(path);
-		//ä¸Šä¼ çš„apkæ–‡ä»¶åç§°
+		//apkÎÄ¼şµÄ·şÎñÆ÷´æ´¢Â·¾¶    ĞŞ¸Ä³ÉÏà¶ÔÂ·¾¶£¡£¡£¡£¡£¡
+		appVersion.setApkLocPath(IdPicPath);
+		//ÉÏ´«µÄapkÎÄ¼şÃû³Æ
 		appVersion.setApkFileName(fileName);
 		
 		if(!appVersionService.addVersion(appVersion)) {
@@ -191,25 +224,26 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * æ ¹æ®appIdæŸ¥è¯¢ç‰ˆæœ¬åˆ—è¡¨
+	 * ¸ù¾İappId²éÑ¯°æ±¾ÁĞ±í,Ìø×ªµ½appversionaddÒ³Ãæ
 	 * @param model
 	 * @param appinfoid
 	 * @return
 	 */
 	@RequestMapping("list/appversionadd/{appinfoid}")
-	public String appversionadd(Model model,@PathVariable Integer appinfoid) {
+	public String appversionadd(Model model,@PathVariable Integer appinfoid,HttpServletRequest request) {
 		
 		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(appinfoid);
 		if(appVersionList != null) {
 			model.addAttribute("appVersionList",appVersionList);
 		}
+		model.addAttribute("appinfoid",appinfoid);
 		return "developer/appversionadd";
 	}
 	
 	
 	
 	/**
-	 * æ ¹æ®çˆ¶ifæŸ¥è¯¢åˆ†ç±»åˆ—è¡¨
+	 * ¸ù¾İ¸¸if²éÑ¯·ÖÀàÁĞ±í
 	 * @param pid
 	 * @return
 	 */
@@ -221,7 +255,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * æŒ‘è½¬åˆ°é¦–é¡µ
+	 * Ìô×ªµ½Ê×Ò³
 	 * @param model
 	 * @param queryAppInfoVO
 	 * @return
@@ -240,15 +274,15 @@ public class DevAppInfoController {
 		
 		appInfoService.getAppInfoList(pageBean,queryAppInfoVO);
 		
-		//æŸ¥è¯¢appçŠ¶æ€
+		//²éÑ¯app×´Ì¬
 		List<DataDictionary> statusList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_STATUS");
-		//æŸ¥è¯¢appæ‰€å±å¹³å°
+		//²éÑ¯appËùÊôÆ½Ì¨
 		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
-		//æŸ¥è¯¢ä¸€çº§åˆ†ç±»
+		//²éÑ¯Ò»¼¶·ÖÀà
 		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(null);
 		
-		// å®Œå–„åˆ†ç±»çš„å›æ˜¾
-		// å¦‚æœä¼ äº†ä¸€çº§åˆ†ç±»  è¯´æ˜ä½ é€‰æ‹©è¿‡  æ‰€ä»¥è‚¯å®šè§¦å‘è¿‡ä¸‰çº§è”åŠ¨  è®¤ä¸ºåº”è¯¥å°†äºŒçº§åˆ†ç±»å…¨éƒ¨æŸ¥è¯¢
+		// ÍêÉÆ·ÖÀàµÄ»ØÏÔ
+		// Èç¹û´«ÁËÒ»¼¶·ÖÀà  ËµÃ÷ÄãÑ¡Ôñ¹ı  ËùÒÔ¿Ï¶¨´¥·¢¹ıÈı¼¶Áª¶¯  ÈÏÎªÓ¦¸Ã½«¶ş¼¶·ÖÀàÈ«²¿²éÑ¯
 		if(queryAppInfoVO.getQueryCategoryLevel1() != null) {
 			List<AppCategory> categoryLevel2List = appCategoryService.getAppCategoryListByParentId(queryAppInfoVO.getQueryCategoryLevel1());
 			model.addAttribute("categoryLevel2List", categoryLevel2List);

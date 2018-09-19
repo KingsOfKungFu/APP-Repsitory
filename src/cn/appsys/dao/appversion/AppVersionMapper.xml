@@ -15,8 +15,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- List<AppVersion> getVersionByAppInfoId(@Param("id") Integer id); -->
 	<select id="getVersionByAppInfoId" resultType="AppVersion">
-		select * from app_version
-			where appId = #{id}
+		select (SELECT i.softwareName FROM app_info i WHERE i.id = a.appId) as appName,a.id,a.appId,a.versionNo,a.versionInfo,a.publishStatus,a.downloadLink,a.versionSize,a.createdBy,a.creationDate,a.modifyBy,a.apkLocPath,a.apkLocPath,
+			(SELECT d.typeName FROM data_dictionary d WHERE d.typeCode = 'PUBLISH_STATUS' AND d.id = a.publishStatus) as publishStatusName,a.modifyDate
+				from app_version a
+					where a.appId = #{id}
 	</select>
 	
 	<!-- int addVersion(AppVersion appVersion); -->
