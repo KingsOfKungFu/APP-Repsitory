@@ -2,6 +2,7 @@ package cn.appsys.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +55,68 @@ public class DevAppInfoController {
 	@Resource
 	private AppVersionService appVersionService;
 	
+
+	@RequestMapping("/appinfoaddsave")
+	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
+								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
+		
+		String path = null;
+		String logoPicPath =  null;
+		String logoLocPath =  null; 
+		if (!multipartFile.isEmpty()) {
+			//鑾峰彇缁濆璺緞
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
+			//鑾峰彇鏂囦欢鍚�
+			String fileName = multipartFile.getOriginalFilename();
+			//鑾峰彇鏂囦欢鍚嶇殑鎵╁睍鍚�
+			String extension = FilenameUtils.getExtension(fileName);
+			//璁剧疆鏂囦欢涓婁紶澶у皬
+			int fileSize = 50000000;
+			//璁剧疆鏂囦欢涓婁紶鏍煎紡
+			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
+			if (fileSize < multipartFile.getSize()) {
+				request.setAttribute("fileUploadError", "涓婁紶鏂囦欢瓒呰繃澶у皬闄愬埗");
+				return "developer/appinfoadd";
+			}else if (!asList.contains(extension)) {
+				request.setAttribute("fileUploadError", "涓嶆敮鎸佹绉嶆枃浠舵牸寮忥紒");
+				return "developer/appinfoadd";
+			}else {
+				//閲嶅懡鍚�
+				String newFileName = System.currentTimeMillis()+"logo."+extension;
+				//鏂囦欢涓婁紶
+				File file = new File(path+File.separator+newFileName);
+				try {
+					multipartFile.transferTo(file);
+					//鑾峰彇缁濆璺緞
+					logoLocPath = path+File.separator+newFileName;
+					//鑾峰彇鐩稿璺緞
+					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		appInfo.setLogoPicPath(logoPicPath);
+		appInfo.setLogoLocPath(logoLocPath);
+		//鑾峰彇褰撳墠鐢ㄦ埛
+		DevUser devUser = (DevUser)request.getSession().getAttribute("loginUser");
+		appInfo.setCreatedBy(devUser.getId());
+		appInfo.setCreationDate(new Date());
+		appInfo.setStatus(1);
+		boolean flag = appInfoService.getAppInfoAdd(appInfo);
+		if (!flag) {
+			return "developer/appinfoadd";
+		}
+		return "redirect:/dev/app/list";
+	}
+	
 	/**
-	 * �汾�޸�ҳ���ϴ��ļ�
+	 * 版本修改页面上传文件
 	 * @param id
 	 * @return
 	 */
@@ -72,7 +133,7 @@ public class DevAppInfoController {
 			int filesize = 900000000;
 			if(attach.getSize() > filesize) {
 				
-				request.setAttribute("", "�ļ�̫��");
+				request.setAttribute("", "文件太大");
 				return "developer/appversionmodify";
 				
 			}else if(prefix.equalsIgnoreCase("apk")){
@@ -81,28 +142,28 @@ public class DevAppInfoController {
 				if(!targetFile.exists()) {
 					targetFile.mkdirs();
 				}
-				//����
+				//保存
 				try {
 					attach.transferTo(targetFile);
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
 				}
-				//ƴ�ӳ����ݿ�洢�����·��
+				//拼接出数据库存储的相对路径
 				IdPicPath = File.separator+"statics"+File.separator+"uploadfiles"+File.separator+fileName;
 			}else {
 				
-				request.setAttribute("", "��ʽ����ȷ");
+				request.setAttribute("", "格式不正确");
 				return "developer/appversionmodify";
 				
 			}
 		}
 		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
-		//��������ֵ(�����ߣ�����ʱ�䣬�ļ���)
+		//设置其他值(更新者，更新时间，文件名)
 		appVersion.setCreatedBy(devUser.getId());
 		appVersion.setCreationDate(new Date());
 		appVersion.setApkFileName(fileName);
 		
-		//����
+		//保存
 		boolean flag = appVersionService.saveappVersion(appVersion);
 		if(!flag) {
 			return "developer/appversionmodify";
@@ -112,7 +173,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ɾ���汾�İ�װ���ļ�
+	 * 删除版本的安装包文件
 	 * @param id
 	 * @param flag
 	 * @return
@@ -134,14 +195,14 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ��ת���汾�޸�ҳ��
+	 * 跳转到版本修改页面
 	 * @return
 	 */
 	@RequestMapping("list/toappversionmodify")
 	public String appversionmodify(@RequestParam Integer vid,@RequestParam Integer aid,Model model) {
-		//��Ӧapp���а汾��Ϣ
+		//对应app所有版本信息
 		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(aid);
-		//��ѯ��app�����°汾��Ϣ
+		//查询该app的最新版本信息
 		AppVersion appVersion = appVersionService.getAppVersionByVersionId(vid);
 		
 		model.addAttribute("appVersionList", appVersionList);
@@ -151,7 +212,171 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ����app��Ϣ�޸�
+	 * 保存app信息修改
+=======
+	 * 妫�鏌PKName鍚嶇О
+	 * @param APKName
+	 * @return
+	 */
+	@RequestMapping("apkexist/{APKName}")
+	@ResponseBody
+	public String checkAPKName(@PathVariable String APKName) {
+		HashMap<String, Object> hashMap = new HashMap<>();
+		AppInfo appInfo = appInfoService.getAppInfoByAPKName(APKName);
+		String result = "exist";
+		if (appInfo == null) {
+			result = "noexist";
+		}
+		hashMap.put("result", result);
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * 璺宠浆鍒癮pp澧炲姞椤甸潰
+	 * @return
+	 */
+	@RequestMapping("appinfoadd")
+	public String toAppInfoAdd() {
+		return "developer/appinfoadd";
+	}
+	
+	/**
+	 * 淇敼app淇℃伅
+	 * @param session
+	 * @param appInfo
+	 * @return
+	 */
+	@RequestMapping("/appinfomodifysave")
+	public String appInfoModifySave(HttpServletRequest request,@ModelAttribute AppInfo appInfo,
+									@RequestParam(value="attach",required=false)MultipartFile multipartFile) {
+		String path = null;
+		String logoPicPath = null;
+		String logoLocPath = null;
+		if (!multipartFile.isEmpty()) {
+			//鑾峰彇缁濆璺緞
+			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
+			//鑾峰彇鏂囦欢鍚�
+			String fileName = multipartFile.getOriginalFilename();
+			//鑾峰彇鏂囦欢鍚嶇殑鎵╁睍鍚�
+			String extension = FilenameUtils.getExtension(fileName);
+			//璁剧疆鏂囦欢涓婁紶澶у皬
+			int fileSize = 50000000;
+			//璁剧疆鏂囦欢涓婁紶鏍煎紡
+			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
+			if (fileSize < multipartFile.getSize()) {
+				request.setAttribute("fileUploadError", "涓婁紶鏂囦欢瓒呰繃澶у皬闄愬埗");
+				return "developer/appinfoadd";
+			}else if (!asList.contains(extension)) {
+				request.setAttribute("fileUploadError", "涓嶆敮鎸佹绉嶆枃浠舵牸寮忥紒");
+				return "developer/appinfoadd";
+			}else {
+				//閲嶅懡鍚�
+				String newFileName = System.currentTimeMillis()+"logo."+extension;
+				//鏂囦欢涓婁紶
+				File file = new File(path+File.separator+newFileName);
+				try {
+					multipartFile.transferTo(file);
+					//鑾峰彇缁濆璺緞
+					logoLocPath = path+File.separator+newFileName;
+					//鑾峰彇鐩稿璺緞
+					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		//鑾峰彇褰撳墠鐧诲綍鐢ㄦ埛
+		DevUser devUser = (DevUser) request.getSession().getAttribute("loginUser");
+		appInfo.setModifyBy(devUser.getId());
+		appInfo.setModifyDate(new Date());
+		appInfo.setLogoPicPath(logoPicPath);
+		appInfo.setLogoLocPath(logoLocPath);
+		boolean flag = appInfoService.appInfoModify(appInfo);
+		if (!flag) {
+			return "developer/appinfomodify";
+		}
+		return "redirect:/dev/app/list";
+	}
+	
+	/**
+	 * 淇敼椤甸潰鍒犻櫎鍥剧墖 鏈畬鎴�
+	 * @param id
+	 * @param flag
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/appinfomodify/delfile")
+	public String deFile(Integer id,String flag) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		String result = "";
+		 if ("logo".equals(flag)) { //鍒犻櫎logo鍥剧墖
+			 if (appInfo.getLogoLocPath()!= null) {
+					File file = new File(appInfo.getLogoLocPath());
+					if (file.exists()) {
+						if (file.delete()) {
+							//鍒犻櫎鏁版嵁搴撶殑logo鍥剧墖锛屽疄闄呬笂鏇存柊鏁版嵁锛屾妸logoPicPath娓呯┖
+							boolean boo = appInfoService.deleteLogoPicPath(id);
+							if (boo) {
+								result = "success";
+							}
+						}	
+					}
+				}else {
+					result = "failed";
+				}
+		}
+		
+		hashMap.put("result", result);
+		return JSON.toJSONString(hashMap);
+	}
+	
+	/**
+	 * ajax鍔犺浇鍒嗙被鍒楄〃
+	 * @param pid
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value= {"appinfomodify/categorylevellist","categorylevellist"})
+	public String categoryLevelList(Integer pid) {
+		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(pid);
+		return JSON.toJSONString(categoryLevel1List);
+	}
+	
+	/**
+	 * ajax鍔犺浇鎵�灞炲钩鍙板垪琛�
+	 * @param typeCode
+	 * @return
+	 */
+	@RequestMapping(value={"appinfomodify/datadictionarylist/{typeCode}","datadictionarylist/{typeCode}"})
+	//@RequestMapping("datadictionarylist")
+	@ResponseBody
+	public String dataDictionaryList(@PathVariable String typeCode) {
+		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
+		return JSON.toJSONString(flatFormList);
+	}
+	
+	/**
+	 * 璺宠浆鍒颁慨鏀筧pp鍩虹淇℃伅椤甸潰
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("appinfomodify/{id}")
+	public String appInfoModify(Model model ,@PathVariable Integer id) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		model.addAttribute("appInfo", appInfo);
+		return "developer/appinfomodify";
+	}
+	
+
+	/**
+	 * 锟斤拷锟斤拷app锟斤拷息锟睫革拷
+>>>>>>> branch 'develop' of https://github.com/KingsOfKungFu/APP-Repsitory.git
 	 * @return
 	 */
 	@RequestMapping("appinfomodifysave")
@@ -161,7 +386,8 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * app�޸�ҳ��ɾ��ͼƬ
+<<<<<<< HEAD
+	 * app修改页面删除图片
 	 * @param id
 	 * @param flag
 	 * @return
@@ -183,7 +409,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * app�޸�ҳ�����������
+	 * app修改页面的三级联动
 	 * @param pid
 	 * @return
 	 */
@@ -198,7 +424,7 @@ public class DevAppInfoController {
 	
 	
 	/**
-	 * app�޸�ҳ�����ƽ̨�б�
+	 * app修改页面加载平台列表
 	 * @param tcode
 	 * @return
 	 */
@@ -213,14 +439,17 @@ public class DevAppInfoController {
 	
 	
 	/**
-	 * ��ת��app�޸�ҳ��
+	 * 跳转到app修改页面
+=======
+	 * 锟斤拷转锟斤拷app锟睫革拷页锟斤拷
+>>>>>>> branch 'develop' of https://github.com/KingsOfKungFu/APP-Repsitory.git
 	 * @param appinfoid
 	 * @return
 	 */
 	@RequestMapping("/list/toappinfomodify")
 	public String toappinfomodify(Model model,@RequestParam Integer appinfoid) {
 		
-		//app������Ϣ
+		//app基本信息
 		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
 		if(appInfo != null) {
 			model.addAttribute("appInfo", appInfo);
@@ -230,7 +459,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ɾ��app��Ϣ
+	 * 删锟斤拷app锟斤拷息
 	 * @param model
 	 * @param id
 	 * @return
@@ -241,58 +470,58 @@ public class DevAppInfoController {
 		
 		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
-														//�÷�����������ܻ���bug
+														//该方法重造过可能会有bug
 		List<AppVersion> versionList = appVersionService.getAppVersionByInfoid(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
-			//��ɾ�ļ�  ����versionListɾ��ÿ���汾���ļ� 
+			//锟斤拷删锟侥硷拷  锟斤拷锟斤拷versionList删锟斤拷每锟斤拷锟芥本锟斤拷锟侥硷拷 
 			for (AppVersion appVersion : versionList) {
 				if(appVersion.getApkLocPath() != null) {
 					File file = new File(path+File.separator+appVersion.getApkFileName());
 					flag = file.delete();
-					//�汾�ļ�ɾ��ʧ��   
+					//锟芥本锟侥硷拷删锟斤拷失锟斤拷   
 					if(flag == false) {
 						hashMap.put("delResult", "false");
 						break;
 					}
 				}
-				//ɾ���汾
+				//删锟斤拷锟芥本
 				//flag = appVersionService.delVersionByInfoId(id);
 			}
 			if(flag == false && versionList.size() > 0) {
 				hashMap.put("delResult", "false");
-				//�ص�appinfolistҳ��
+				//锟截碉拷appinfolist页锟斤拷
 				return "developer/appinfolist";
 			}
-			//ɾ��appͼƬ     ·���Բ���ɾ����
+			//删锟斤拷app图片     路锟斤拷锟皆诧拷锟斤拷删锟斤拷锟斤拷
 			if(appInfo.getLogoLocPath() != null) {
-				//ƴ�ӳ�ͼƬ·������ɾ��ͼƬ
+				//拼锟接筹拷图片路锟斤拷锟斤拷锟斤拷删锟斤拷图片
 				File file = new File(request.getSession().getServletContext().getRealPath(appInfo.getLogoLocPath()));
 				flag = file.delete();
 			}
 			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//�ص�appinfolistҳ��
+				//锟截碉拷appinfolist页锟斤拷
 				return "developer/appinfolist";
 			}
-			//����Ķ�ɾ���ɹ���   ɾ��app��Ϣ
+			//锟斤拷锟斤拷亩锟缴撅拷锟斤拷晒锟斤拷锟�   删锟斤拷app锟斤拷息
 			if(flag) {
 			 	flag = appInfoService.dealpp(id);
 			}
 			if(flag == false) {
 				hashMap.put("delResult", "false");
-				//�ص�appinfolistҳ��
+				//锟截碉拷appinfolist页锟斤拷
 				return "developer/appinfolist";
 			}
 			hashMap.put("delResult", "true");
 		}
-		//��ת��appinfolstҳ��
+		//锟斤拷转锟斤拷appinfolst页锟斤拷
 		return JSON.toJSONString(hashMap);
 	}
 	
 	/**
-	 * �鿴app��ϸ��Ϣ
+	 * 锟介看app锟斤拷细锟斤拷息
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -308,7 +537,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ���Ӱ汾
+	 * 锟斤拷锟接版本
 	 * @param request
 	 * @param appVersion
 	 * @param attach
@@ -320,51 +549,51 @@ public class DevAppInfoController {
 		String IdPicPath = null;
 		String fileName = null;
 		String path = null;
-		//�ж��ļ��Ƿ�Ϊ��
+		//锟叫讹拷锟侥硷拷锟角凤拷为锟斤拷
 		if(!attach.isEmpty()) {
-			//�ļ��ı��ش洢·��
+			//锟侥硷拷锟侥憋拷锟截存储路锟斤拷
 			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
 			String oldFileName = attach.getOriginalFilename();
 			String prefix = FilenameUtils.getExtension(oldFileName);
 			int filesize = 900000000;
 			if(attach.getSize() > filesize) {
-				request.getSession().setAttribute("fileUploadError", "�ϴ��ļ����ܳ���500kb");
-				//�������Ӱ汾ҳ��
+				request.getSession().setAttribute("fileUploadError", "锟较达拷锟侥硷拷锟斤拷锟杰筹拷锟斤拷500kb");
+				//锟斤拷锟斤拷锟斤拷锟接版本页锟斤拷
 				return "developer/appversionadd";
 			}else if(prefix.equalsIgnoreCase("apk")){
-				//���ļ���
+				//锟斤拷锟侥硷拷锟斤拷
 				fileName = System.currentTimeMillis()+"_xxx.apk";
 				File targetFile = new File(path,fileName);
 				if(!targetFile.exists()) {
 					targetFile.mkdirs();
 				}
-				//����
+				//锟斤拷锟斤拷
 				try {
 					attach.transferTo(targetFile);
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					request.setAttribute("fileUploadError", "�ϴ�ʧ��");
+					request.setAttribute("fileUploadError", "锟较达拷失锟斤拷");
 					return "developer/appversionadd";
 				}
-				//ƴ�ӳ����ݿ�洢�����·��
+				//拼锟接筹拷锟斤拷锟捷匡拷娲拷锟斤拷锟斤拷路锟斤拷
 				IdPicPath = File.separator+"statics"+File.separator+"uploadfiles"+File.separator+fileName;
 			}else {
-				request.setAttribute("fileUploadError", "�ϴ��ļ���ʽ����ȷ");
+				request.setAttribute("fileUploadError", "锟较达拷锟侥硷拷锟斤拷式锟斤拷锟斤拷确");
 				return "developer/appversionadd";
 			}
 		}
 		
-		//���ƶ���ֵ
-		//��������  �ļ��洢·��+�ļ���
+		//锟斤拷锟狡讹拷锟斤拷值
+		//锟斤拷锟斤拷锟斤拷锟斤拷  锟侥硷拷锟芥储路锟斤拷+锟侥硷拷锟斤拷
 		appVersion.setDownloadLink(IdPicPath);
-		//������
+		//锟斤拷锟斤拷锟斤拷
 		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
 		appVersion.setCreatedBy(devUser.getCreatedBy());
-		//����ʱ��
+		//锟斤拷锟斤拷时锟斤拷
 		appVersion.setCreationDate(new Date());
-		//apk�ļ��ķ������洢·��    �޸ĳ����·������������
+		//apk锟侥硷拷锟侥凤拷锟斤拷锟斤拷锟芥储路锟斤拷    锟睫改筹拷锟斤拷锟铰凤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟�
 		appVersion.setApkLocPath(IdPicPath);
-		//�ϴ���apk�ļ�����
+		//锟较达拷锟斤拷apk锟侥硷拷锟斤拷锟斤拷
 		appVersion.setApkFileName(fileName);
 		
 		if(!appVersionService.addVersion(appVersion)) {
@@ -375,7 +604,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ����appId��ѯ�汾�б�,��ת��appversionaddҳ��
+	 * 锟斤拷锟斤拷appId锟斤拷询锟芥本锟叫憋拷,锟斤拷转锟斤拷appversionadd页锟斤拷
 	 * @param model
 	 * @param appinfoid
 	 * @return
@@ -394,7 +623,7 @@ public class DevAppInfoController {
 	
 	
 	/**
-	 * ���ݸ�if��ѯ�����б�
+	 * 锟斤拷锟捷革拷if锟斤拷询锟斤拷锟斤拷锟叫憋拷
 	 * @param pid
 	 * @return
 	 */
@@ -406,7 +635,7 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * ��ת����ҳ
+	 * 锟斤拷转锟斤拷锟斤拷页
 	 * @param model
 	 * @param queryAppInfoVO
 	 * @return
@@ -425,15 +654,15 @@ public class DevAppInfoController {
 		
 		appInfoService.getAppInfoList(pageBean,queryAppInfoVO);
 		
-		//��ѯapp״̬
+		//锟斤拷询app状态
 		List<DataDictionary> statusList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_STATUS");
-		//��ѯapp����ƽ̨
+		//锟斤拷询app锟斤拷锟斤拷平台
 		List<DataDictionary> flatFormList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_FLATFORM");
-		//��ѯһ������
+		//锟斤拷询一锟斤拷锟斤拷锟斤拷
 		List<AppCategory> categoryLevel1List = appCategoryService.getAppCategoryListByParentId(null);
 		
-		// ���Ʒ���Ļ���
-		// �������һ������  ˵����ѡ���  ���Կ϶���������������  ��ΪӦ�ý���������ȫ����ѯ
+		// 锟斤拷锟狡凤拷锟斤拷幕锟斤拷锟�
+		// 锟斤拷锟斤拷锟斤拷锟揭伙拷锟斤拷锟斤拷锟�  说锟斤拷锟斤拷选锟斤拷锟�  锟斤拷锟皆肯讹拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷  锟斤拷为应锟矫斤拷锟斤拷锟斤拷锟斤拷锟斤拷全锟斤拷锟斤拷询
 		if(queryAppInfoVO.getQueryCategoryLevel1() != null) {
 			List<AppCategory> categoryLevel2List = appCategoryService.getAppCategoryListByParentId(queryAppInfoVO.getQueryCategoryLevel1());
 			model.addAttribute("categoryLevel2List", categoryLevel2List);

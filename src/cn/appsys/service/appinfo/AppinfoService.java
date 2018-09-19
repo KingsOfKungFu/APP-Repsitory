@@ -11,25 +11,34 @@ import cn.appsys.util.PageBean;
 public interface AppinfoService {
 	
 	/**
-	 * ¸ù¾ÝinfoidÉ¾³ýapp
+	 * ï¿½ï¿½ï¿½ï¿½infoidÉ¾ï¿½ï¿½app
 	 * @param id
 	 * @return
 	 */
 	boolean dealpp(Integer id);
 	
 	/**
-	 * ¸ù¾Ýid²éÑ¯appÐÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½Ñ¯appï¿½ï¿½Ï¢
 	 * @param appinfoid
 	 * @return
 	 */
 	AppInfo getAppInfoById(Integer appinfoid);
 	
 	/**
-	 * ¸ù¾ÝÌõ¼þ²éÑ¯appÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯appï¿½Ð±ï¿½
 	 * @param pageBean
 	 * @param queryAppInfoV
 	 */
 	void getAppInfoList(PageBean<AppInfo> pageBean, QueryAppInfoVO queryAppInfoV);
+
+	
+	boolean appInfoModify(AppInfo appInfo);
+
+	AppInfo getAppInfoByAPKName(String aPKName);
+
+	boolean getAppInfoAdd(AppInfo appInfo);
+
+	boolean deleteLogoPicPath(Integer id);
 
 	
 
