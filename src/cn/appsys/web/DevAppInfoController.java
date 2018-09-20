@@ -66,7 +66,7 @@ public class DevAppInfoController {
 		
 		AppInfo appInfo = appInfoService.getAppInfoById(appId);
 		
-				
+		
 		return "";
 	}
 	
@@ -392,16 +392,6 @@ public class DevAppInfoController {
 	}
 	
 
-	/**
-	 * 锟斤拷锟斤拷app锟斤拷息锟睫革拷
-	 * @return
-	 */
-	@RequestMapping("appinfomodifysave")
-	public String appinfomodify() {
-		
-		return "";
-	}
-	
 	/**
 	 * app修改页面删除图片
 	 * @param id
