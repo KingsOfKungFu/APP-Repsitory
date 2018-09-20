@@ -95,6 +95,7 @@ $(function(){
 	
 	$("#back").on("click",function(){
 		window.location.href = "../list";
+		/*history.go(-1);*/
 	});
 	
 	$("#APKName").bind("blur",function(){

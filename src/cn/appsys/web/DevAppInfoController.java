@@ -54,16 +54,6 @@ public class DevAppInfoController {
 	
 	@Resource
 	private AppVersionService appVersionService;
-	
-
-
-	/**
-	 * 增加app信息
-	 * @param appInfo
-	 * @param request
-	 * @param multipartFile
-	 * @return
-	 */
 
 	/**
 	 * 上下架操作
@@ -81,7 +71,13 @@ public class DevAppInfoController {
 	}
 	
 
-
+	/**
+	 * 增加app信息
+	 * @param appInfo
+	 * @param request
+	 * @param multipartFile
+	 * @return
+	 */
 	@RequestMapping("/appinfoaddsave")
 	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
 								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
@@ -102,12 +98,12 @@ public class DevAppInfoController {
 			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
 			if (fileSize < multipartFile.getSize()) {
 				
-				request.setAttribute("fileUploadError", "");
+				request.setAttribute("fileUploadError", "文件上传超过大小限制！");
 				return "developer/appinfoadd";
 				
 			}else if (!asList.contains(extension)) {
 				
-				request.setAttribute("fileUploadError", "");
+				request.setAttribute("fileUploadError", "不支持此类文件格式上传！");
 				return "developer/appinfoadd";
 				
 			}else {
@@ -118,7 +114,7 @@ public class DevAppInfoController {
 				try {
 					multipartFile.transferTo(file);
 					
-					logoLocPath = path+File.separator+newFileName;
+					logoLocPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
 					
 					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
 				} catch (IllegalStateException e) {
@@ -134,7 +130,7 @@ public class DevAppInfoController {
 		appInfo.setLogoPicPath(logoPicPath);
 		appInfo.setLogoLocPath(logoLocPath);
 		//
-		DevUser devUser = (DevUser)request.getSession().getAttribute("loginUser");
+		DevUser devUser = (DevUser)request.getSession().getAttribute("devLoginUser");
 		appInfo.setCreatedBy(devUser.getId());
 		appInfo.setCreationDate(new Date());
 		appInfo.setStatus(1);
@@ -307,10 +303,10 @@ public class DevAppInfoController {
 			//璁剧疆鏂囦欢涓婁紶鏍煎紡
 			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
 			if (fileSize < multipartFile.getSize()) {
-				request.setAttribute("fileUploadError", "涓婁紶鏂囦欢瓒呰繃澶у皬闄愬埗");
+				request.setAttribute("fileUploadError", "文件超过大小限制！");
 				return "developer/appinfoadd";
 			}else if (!asList.contains(extension)) {
-				request.setAttribute("fileUploadError", "涓嶆敮鎸佹绉嶆枃浠舵牸寮忥紒");
+				request.setAttribute("fileUploadError", "不支持此类文件格式上传！");
 				return "developer/appinfoadd";
 			}else {
 				//閲嶅懡鍚�
@@ -320,7 +316,7 @@ public class DevAppInfoController {
 				try {
 					multipartFile.transferTo(file);
 					//鑾峰彇缁濆璺緞
-					logoLocPath = path+File.separator+newFileName;
+					logoLocPath =File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
 					//鑾峰彇鐩稿璺緞
 					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
 				} catch (IllegalStateException e) {
@@ -334,7 +330,7 @@ public class DevAppInfoController {
 			
 		}
 		//鑾峰彇褰撳墠鐧诲綍鐢ㄦ埛
-		DevUser devUser = (DevUser) request.getSession().getAttribute("loginUser");
+		DevUser devUser = (DevUser) request.getSession().getAttribute("devLoginUser");
 		appInfo.setModifyBy(devUser.getId());
 		appInfo.setModifyDate(new Date());
 		appInfo.setLogoPicPath(logoPicPath);
@@ -354,28 +350,22 @@ public class DevAppInfoController {
 	 */
 	@ResponseBody
 	@RequestMapping("/appinfomodify/delfile")
-	public String deFile(Integer id,String flag) {
+	public String deFile(HttpServletRequest request,Integer id,String flag) {
+		HashMap<String, Object> hashMap = new HashMap<String,Object>();
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
-		HashMap<String, Object> hashMap = new HashMap<>();
-		String result = "";
-		 if ("logo".equals(flag)) { //鍒犻櫎logo鍥剧墖
-			 if (appInfo.getLogoLocPath()!= null) {
-					File file = new File(appInfo.getLogoLocPath());
-					if (file.exists()) {
-						if (file.delete()) {
-							//鍒犻櫎鏁版嵁搴撶殑logo鍥剧墖锛屽疄闄呬笂鏇存柊鏁版嵁锛屾妸logoPicPath娓呯┖
-							boolean boo = appInfoService.deleteLogoPicPath(id);
-							if (boo) {
-								result = "success";
-							}
-						}	
-					}
+		String path = request.getSession().getServletContext().getRealPath(appInfo.getLogoLocPath());
+		File file = new File(path);
+		if ("logo".equals(flag)) {
+			if (file.exists()) {
+				if(file.delete()) {
+					appInfoService.deleteLogoPicPath(id);
+					hashMap.put("result", "success");
 				}else {
-					result = "failed";
+					hashMap.put("result", "failed");
 				}
+			}
+			
 		}
-		
-		hashMap.put("result", result);
 		return JSON.toJSONString(hashMap);
 	}
 	
@@ -465,24 +455,7 @@ public class DevAppInfoController {
 	}
 	
 	
-	/**
-	 * 跳转到app修改页面
-	 * 锟斤拷转锟斤拷app锟睫革拷页锟斤拷
-	 * @param appinfoid
-	 * @return
-	 */
-	@RequestMapping("/list/toappinfomodify")
-	public String toappinfomodify(Model model,@RequestParam Integer appinfoid) {
-		
-		//app基本信息
-		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
-		if(appInfo != null) {
-			model.addAttribute("appInfo", appInfo);
-			return "developer/appinfomodify";
-		}
-		return "developer/appinfolist";
-
-	}
+	
 	
 	/**
 	 * 删除app信息
@@ -559,7 +532,7 @@ public class DevAppInfoController {
 	public String appView(@PathVariable Integer id,Model model) {
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		//查询版本列表
-		List<AppVersion> appVersionList = appVersionService.getVersionList();
+		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(id);
 		model.addAttribute("appInfo", appInfo);
 		model.addAttribute("appVersionList", appVersionList);
 		return "developer/appinfoview";

@@ -7,8 +7,6 @@ import cn.appsys.pojo.AppVersion;
 public interface AppVersionService {
 	
 	/**
-<<<<<<< HEAD
-=======
 	 * 更新最新版本
 	 * @param appVersion
 	 * @return
@@ -24,7 +22,6 @@ public interface AppVersionService {
 
 	
 	/**
->>>>>>> branch 'develop' of https://github.com/KingsOfKungFu/APP-Repsitory.git
 	 * ����infoidɾ�����а汾
 	 * @param id
 	 * @return
@@ -32,7 +29,6 @@ public interface AppVersionService {
 	boolean delVersionByInfoId(Integer id);
 	
 	/**
-<<<<<<< HEAD
 	 * ����appinfoid��ѯ�汾�б�
 	 * @param id
 	 * @return
@@ -40,8 +36,6 @@ public interface AppVersionService {
 	//List<AppVersion> getVersionByAppInfoId(Integer id);
 	
 	/**
-=======
->>>>>>> branch 'develop' of https://github.com/KingsOfKungFu/APP-Repsitory.git
 	 * ���Ӱ汾
 	 * @param appVersion
 	 */
