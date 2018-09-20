@@ -17,7 +17,19 @@ public class AppVersionServiceImpl implements AppVersionService {
 	private AppVersionMapper appVersionMapper;
 	
 	
+	@Override
+	public boolean saveappVersion(AppVersion appVersion) {
+		if(appVersionMapper.saveappVersion(appVersion) > 0) {
+			return true;
+		}
+		return false;
+	}
 	
+	@Override
+	public AppVersion getAppVersionByVersionId(Integer vid) {
+		
+		return appVersionMapper.getAppVersionByVersionId(vid);
+	}
 	
 	@Override
 	public boolean delVersionByInfoId(Integer id) {
@@ -27,11 +39,13 @@ public class AppVersionServiceImpl implements AppVersionService {
 		return false;
 	}
 
+
 	/*@Override
 	public List<AppVersion> getVersionByAppInfoId(Integer id) {
 		return appVersionMapper.getVersionByAppInfoId(id);
 	}
 	*/
+
 	@Override
 	public List<AppVersion> getAppVersionByInfoid(Integer appinfoid) {
 		
@@ -52,4 +66,5 @@ public class AppVersionServiceImpl implements AppVersionService {
 	}
 
 	
+
 }

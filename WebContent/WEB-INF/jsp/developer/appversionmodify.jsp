@@ -83,8 +83,8 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content" style="display: block;">
-         <br>
-        <form class="form-horizontal form-label-left" action="appversionmodifysave" method="post" enctype="multipart/form-data">
+         <br>												
+        <form class="form-horizontal form-label-left" action="${pageContext.request.contextPath }/dev/app/appversionmodifysave" method="post" enctype="multipart/form-data">
            <input type="hidden" name="id" id="id" value="${appVersion.id}">
            <input type="hidden" name="appId" id="appId" value="${appVersion.appId}">
           <div class="item form-group">
@@ -139,7 +139,7 @@
           <div class="form-group">
             <div class="col-md-6 col-md-offset-3">
               <button id="send" type="submit" class="btn btn-success">保存</button>
-              <button type="button" class="btn btn-primary" id="back">返回</button>
+              <button type="button" class="btn btn-primary" id="back"><a href="javascript:history.go(-1);">返回</a></button>
             </div>
           </div>
           <div class="clearfix"></div>

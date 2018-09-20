@@ -1,9 +1,9 @@
 
-
+// 定义一个通用的查询分类的方法         (父级id,
 function  loadCategoryLevel(pid,cl,categoryLevel){
 	$.ajax({
 		type:"GET",//请求类型
-		url:"categorylevellist",//请求的url
+		url:$("#path").val()+"/dev/app/categorylevellist.json",//请求的url
 		data:{pid:pid},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -22,13 +22,14 @@ function  loadCategoryLevel(pid,cl,categoryLevel){
 		error:function(data){//当访问时候，404，500 等非200的错误状态码
 			alert("加载分类列表失败！");
 		}
-	});
+	}); 
 }   
 
+//删除图片的方法
 function delfile(id){
 	$.ajax({
 		type:"GET",//请求类型
-		url:"delfile",//请求的url
+		url:$("#path").val()+"/dev/app/delfile",//请求的url
 		data:{id:id,flag:'logo'},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -46,12 +47,13 @@ function delfile(id){
 	});  
 }
 
+//页面加载函数
 $(function(){  
 	//动态加载所属平台列表
 	$.ajax({
 		type:"GET",//请求类型
-		url:"datadictionarylist/"+"APP_FLATFORM",//请求的url
-		//data:{tcode:"APP_FLATFORM"},//请求参数
+		url:$("#path").val()+"/dev/app/datadictionarylist",//请求的url
+		data:{tcode:"APP_FLATFORM"},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
 			var fid = $("#fid").val();
@@ -88,12 +90,12 @@ $(function(){
 			loadCategoryLevel(categoryLevel1,cl2,"categoryLevel2");
 		}else{
 			$("#categoryLevel2").html("");
-			/*var options = "<option value=\"\">--请选择--</option>";
-			$("#categoryLevel2").html(options);*/
+			var options = "<option value=\"\">--请选择--</option>";
+			$("#categoryLevel2").html(options);
 		}
 		$("#categoryLevel3").html("");
-		/*var options = "<option value=\"\">--请选择--</option>";
-		$("#categoryLevel3").html(options);*/
+		var options = "<option value=\"\">--请选择--</option>";
+		$("#categoryLevel3").html(options);
 	});
 	//联动效果：动态加载三级分类列表
 	$("#categoryLevel2").change(function(){
@@ -102,13 +104,13 @@ $(function(){
 			loadCategoryLevel(categoryLevel2,cl3,"categoryLevel3");
 		}else{
 			$("#categoryLevel3").html("");
-			/*var options = "<option value=\"\">--请选择--</option>";
-			$("#categoryLevel3").html(options);*/
+			var options = "<option value=\"\">--请选择--</option>";
+			$("#categoryLevel3").html(options);
 		}
 	});
 	
 	$("#back").on("click",function(){
-		window.location.href = "../list";
+		window.location.href = "list";
 	});
 	
 	
