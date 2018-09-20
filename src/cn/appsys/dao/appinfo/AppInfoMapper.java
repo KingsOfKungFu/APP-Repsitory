@@ -12,6 +12,13 @@ import cn.appsys.pojo.QueryAppInfoVO;
 public interface AppInfoMapper {
 	
 	/**
+	 * 更新appinfo信息
+	 * @param appInfo
+	 * @return
+	 */
+	int updataAppInfo(AppInfo appInfo);
+	
+	/**
 	 * ����infoidɾ��app
 	 * @param id
 	 * @return
@@ -47,6 +54,5 @@ public interface AppInfoMapper {
 	int getAppInfoAdd(AppInfo appInfo);
 
 	int updateLogoPicPath(Integer id);
-	
-	
+
 }

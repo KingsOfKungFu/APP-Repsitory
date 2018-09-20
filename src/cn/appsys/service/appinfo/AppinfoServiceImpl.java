@@ -25,6 +25,14 @@ public class AppinfoServiceImpl implements AppinfoService{
 	
 	
 	@Override
+	public boolean updataAppInfo(AppInfo appInfo) {
+		if(appInfoMapper.updataAppInfo(appInfo) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean dealpp(Integer id) {
 		if(appInfoMapper.dealpp(id) > 0) {
 			return true;
@@ -86,4 +94,5 @@ public class AppinfoServiceImpl implements AppinfoService{
 		}
 		return result;
 	}
+
 }

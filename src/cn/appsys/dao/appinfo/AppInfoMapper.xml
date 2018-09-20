@@ -4,6 +4,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.appsys.dao.appinfo.AppInfoMapper">
 
+	<!-- int updataAppInfo(AppInfo appInfo); -->
+	<update id="" parameterType="AppInfo">
+		UPDATE app_info 
+			SET
+			<if test="softwareName">softwareName = #{softwareName}</if>
+			<if test="supportROM">supportROM = #{supportROM}</if>
+			<if test="interfaceLanguage">interfaceLanguage = #{interfaceLanguage}</if>
+			<if test="softwareSize">softwareSize = #{softwareSize}</if>
+			<if test="updateDate">updateDate = #{updateDate}</if>
+			<if test="devId">devId = #{devId}</if>
+			<if test="appInfo">appInfo = #{appInfo}</if>
+			<if test="status">status = #{status}</if>
+			<if test="onSaleDate">onSaleDate = #{onSaleDate}</if>
+			<if test="offSaleDate">offSaleDate = #{offSaleDate}</if>
+			<if test="flatformId">flatformId = #{flatformId}</if>
+			<if test="categoryLevel3">categoryLevel3 = #{categoryLevel3}</if>
+			<if test="downloads">downloads = #{downloads}</if>
+			<if test="modifyBy">modifyBy = #{modifyBy}</if>
+			<if test="modifyDate">modifyDate = #{modifyDate}</if>
+			<if test="categoryLevel1">categoryLevel1 = #{categoryLevel1}</if>
+			<if test="categoryLevel2">categoryLevel2 = #{categoryLevel2}</if>
+			<if test="logoPicPath">logoPicPath = #{logoPicPath}</if>
+			<if test="logoPicPath">logoPicPath = #{logoPicPath}</if>
+			<if test="versionId">versionId = #{versionId}</if>
+			<where>
+				id = #{id}
+			</where>
+			
+	</update>
+
 	<!-- int updateLogoPicPath(@Param("id")Integer id); -->
 	<update id="updateLogoPicPath" parameterType="int">
 		update app_info 

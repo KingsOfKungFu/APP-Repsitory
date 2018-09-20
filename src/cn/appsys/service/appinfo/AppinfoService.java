@@ -11,6 +11,13 @@ import cn.appsys.util.PageBean;
 public interface AppinfoService {
 	
 	/**
+	 * 更新appinfo信息
+	 * @param appInfo
+	 * @return
+	 */
+	boolean updataAppInfo(AppInfo appInfo);
+	
+	/**
 	 * ����infoidɾ��app
 	 * @param id
 	 * @return
@@ -40,6 +47,5 @@ public interface AppinfoService {
 
 	boolean deleteLogoPicPath(Integer id);
 
-	
 
 }

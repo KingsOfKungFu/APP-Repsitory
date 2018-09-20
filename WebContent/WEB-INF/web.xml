@@ -48,4 +48,14 @@
   	<param-value>classpath:spring/applicationContext-*.xml</param-value>
   </context-param>
   
+  <!-- 处理put等请求 -->
+  <filter>
+  	<filter-name>HttpPutFormContentFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>HttpPutFormContentFilter</filter-name>
+  	<url-pattern>*.do</url-pattern>
+  </filter-mapping>
+  
 </web-app>

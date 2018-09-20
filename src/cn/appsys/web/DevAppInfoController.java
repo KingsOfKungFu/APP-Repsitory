@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,11 +72,24 @@ public class DevAppInfoController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("/sale.json")
+	@RequestMapping(value ="/sale.json/{appId}",method=RequestMethod.PUT)
 	public String sale(@RequestParam Integer appId) {
 		
+		HashMap<String,String> hashMap2 = new HashMap<>();
+		HashMap<Object,Object> hashMap = new HashMap<>();
 		AppInfo appInfo = appInfoService.getAppInfoById(appId);
+		//List<DataDictionary> dataDictionaryList = dataDictionaryService.getDataDictionaryListByTypeCode("APP_STATUS");
 		
+		if(appInfo.getStatus() == 4) {
+			appInfo.setStatus(5);
+		}else if(appInfo.getStatus() == 5) {
+			appInfo.setStatus(4);
+		}
+		
+		boolean flag = appInfoService.updataAppInfo(appInfo);
+		if(flag) {
+			hashMap.put("resultMsg",hashMap2.put("m", "m"));
+		}
 		
 		return "";
 	}
@@ -559,7 +573,7 @@ public class DevAppInfoController {
 	public String appView(@PathVariable Integer id,Model model) {
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		//查询版本列表
-		List<AppVersion> appVersionList = appVersionService.getVersionList();
+		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(id);
 		model.addAttribute("appInfo", appInfo);
 		model.addAttribute("appVersionList", appVersionList);
 		return "developer/appinfoview";
