@@ -9,14 +9,14 @@ import cn.appsys.pojo.AppVersion;
 public interface AppVersionMapper {
 	
 	/**
-	 * ±£´æ×îÐÂ°æ±¾ÐÞ¸Ä
+	 * æ›´æ–°æœ€æ–°ç‰ˆæœ¬
 	 * @param appVersion
 	 * @return
 	 */
 	int saveappVersion(AppVersion appVersion);
 	
 	/**
-	 * ¸ù¾ÝVsersionId²éÑ¯×îÐÂ°æ±¾ÐÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½VsersionIdï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Â°æ±¾ï¿½ï¿½Ï¢
 	 * @param vid
 	 * @return
 	 */
@@ -31,14 +31,14 @@ public interface AppVersionMapper {
 	
 	
 	/**
-	 * Ôö¼Ó°æ±¾
+	 * ï¿½ï¿½ï¿½Ó°æ±¾
 	 * @param appVersion
 	 * @return
 	 */
 	int addVersion(AppVersion appVersion);
 
 	/**
-	 * ¸ù¾Ýappinfoid²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appinfoidï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param appinfoid
 	 * @return
 	 */

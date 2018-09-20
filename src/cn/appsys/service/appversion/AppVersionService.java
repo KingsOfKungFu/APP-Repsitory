@@ -7,14 +7,14 @@ import cn.appsys.pojo.AppVersion;
 public interface AppVersionService {
 	
 	/**
-	 * ±£´æ×îÐÂ°æ±¾ÐÞ¸Ä
+	 * æ›´æ–°æœ€æ–°ç‰ˆæœ¬
 	 * @param appVersion
 	 * @return
 	 */
 	boolean saveappVersion(AppVersion appVersion);
 	
 	/**
-	 * ¸ù¾ÝVsersionId²éÑ¯×îÐÂ°æ±¾ÐÅÏ¢
+	 * ï¿½ï¿½ï¿½ï¿½VsersionIdï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Â°æ±¾ï¿½ï¿½Ï¢
 	 * @param vid
 	 * @return
 	 */
@@ -22,20 +22,20 @@ public interface AppVersionService {
 
 	
 	/**
-	 * ¸ù¾ÝinfoidÉ¾³ýËùÓÐ°æ±¾
+	 * ï¿½ï¿½ï¿½ï¿½infoidÉ¾ï¿½ï¿½ï¿½ï¿½ï¿½Ð°æ±¾
 	 * @param id
 	 * @return
 	 */
 	boolean delVersionByInfoId(Integer id);
 	
 	/**
-	 * Ôö¼Ó°æ±¾
+	 * ï¿½ï¿½ï¿½Ó°æ±¾
 	 * @param appVersion
 	 */
 	boolean addVersion(AppVersion appVersion);
 	
 	/**
-	 * ¸ù¾ÝappId²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appIdï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param appinfoid
 	 * @return
 	 */
