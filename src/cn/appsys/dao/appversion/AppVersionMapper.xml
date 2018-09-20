@@ -5,6 +5,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="cn.appsys.dao.appversion.AppVersionMapper">
 
 
+	<!-- List<AppVersion> getVersionList(); -->
+	<select id="getVersionList" resultType="AppVersion">
+		select v.id,v.versionNo,v.versionInfo,v.downloadLink,v.versionSize,v.createdBy,v.creationDate,
+				v.modifyBy,v.modifyDate,v.apkLocPath,v.apkFileName,
+				v.appId,(select i.softwareName from app_info i where i.id=v.appId) as appName,
+				v.publishStatus,(select d.valueName from data_dictionary d where d.valueId=v.publishStatus and d.typeCode='APP_STATUS') as publishStatusName
+					from app_version v	
+	</select>
+
 	<!-- int saveappVersion(AppVersion appVersion); -->
 	<update id="saveappVersion" parameterType="AppVersion">
 		UPDATE app_version 
@@ -25,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- AppVersion getAppVersionByVersionId(Integer vid); -->
 	<select id="getAppVersionByVersionId" resultType="AppVersion">
 			SELECT * from app_version WHERE id = #{vid}
+
 	</select>
 
 	<!-- int delVersionByInfoId(@Param("id") Integer id); -->
@@ -32,9 +42,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			DELETE FROM app_version 
 			WHERE appId = #{id}
 	</delete>
-	
-						
-	
 	
 	<!-- int addVersion(AppVersion appVersion); -->
 	<insert id="addVersion">
@@ -50,8 +57,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="modifyBy != null">modifyBy,</if>
 			<if test="modifyDate != null">modifyDate,</if>
 			<if test="apkLocPath != null">apkLocPath,</if>
-			<if test="apkFileName != null">apkFileName</if>
-		) values(
+			<if test="apkFileName != null">apkFileName</if>) 
+			values(
 			<if test="appId != null">#{appId},</if>
 			<if test="versionNo != null">#{versionNo},</if>
 			<if test="versionInfo != null">#{versionInfo},</if>
@@ -96,10 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					AND d.typeCode = 'APP_STATUS' AND d.valueId = i.status
 					AND i.id = #{appinfoid}
 					ORDER BY v.modifyDate DESC
-		<!-- select (SELECT i.softwareName FROM app_info i WHERE i.id = a.appId) as appName,a.id,a.appId,a.versionNo,a.versionInfo,a.publishStatus,a.downloadLink,a.versionSize,a.createdBy,a.creationDate,a.modifyBy,a.apkLocPath,a.apkLocPath,
-			(SELECT d.typeName FROM data_dictionary d WHERE d.typeCode = 'PUBLISH_STATUS' AND d.id = a.publishStatus) as publishStatusName,a.modifyDate
-				from app_version a
-					where a.appId = #{appinfoid} -->
+		
 	</select>
 	
 	

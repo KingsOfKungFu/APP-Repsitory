@@ -55,6 +55,16 @@ public class DevAppInfoController {
 	@Resource
 	private AppVersionService appVersionService;
 	
+
+
+	/**
+	 * 增加app信息
+	 * @param appInfo
+	 * @param request
+	 * @param multipartFile
+	 * @return
+	 */
+
 	/**
 	 * 上下架操作
 	 * @param appId
@@ -71,6 +81,7 @@ public class DevAppInfoController {
 	}
 	
 
+
 	@RequestMapping("/appinfoaddsave")
 	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
 								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
@@ -79,15 +90,15 @@ public class DevAppInfoController {
 		String logoPicPath =  null;
 		String logoLocPath =  null; 
 		if (!multipartFile.isEmpty()) {
-			//鑾峰彇缁濆璺緞
+			
 			path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles");
-			//鑾峰彇鏂囦欢鍚�
+			
 			String fileName = multipartFile.getOriginalFilename();
-			//鑾峰彇鏂囦欢鍚嶇殑鎵╁睍鍚�
+			
 			String extension = FilenameUtils.getExtension(fileName);
-			//璁剧疆鏂囦欢涓婁紶澶у皬
+		
 			int fileSize = 50000000;
-			//璁剧疆鏂囦欢涓婁紶鏍煎紡
+			
 			List<String> asList = Arrays.asList("jpg","png","jpeg","pneg");
 			if (fileSize < multipartFile.getSize()) {
 				
@@ -100,15 +111,15 @@ public class DevAppInfoController {
 				return "developer/appinfoadd";
 				
 			}else {
-				//閲嶅懡鍚�
+				
 				String newFileName = System.currentTimeMillis()+"logo."+extension;
-				//鏂囦欢涓婁紶
+				
 				File file = new File(path+File.separator+newFileName);
 				try {
 					multipartFile.transferTo(file);
-					//鑾峰彇缁濆璺緞
+					
 					logoLocPath = path+File.separator+newFileName;
-					//鑾峰彇鐩稿璺緞
+					
 					logoPicPath = File.separator+"statics"+File.separator+"uploadfiles"+newFileName;
 				} catch (IllegalStateException e) {
 					// TODO Auto-generated catch block
@@ -400,6 +411,14 @@ public class DevAppInfoController {
 	 * @param flag
 	 * @return
 	 */
+
+	@RequestMapping("/appinfomodify/{id}")
+	public String appInfoModify(Model model ,@PathVariable Integer id) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		model.addAttribute("appInfo", appInfo);
+		return "developer/appinfomodify";
+	}
+
 	@ResponseBody
 	@RequestMapping("list/delfile")
 	public String delfile(HttpServletRequest request,@RequestParam Integer id,@RequestParam String flag) {
@@ -462,6 +481,7 @@ public class DevAppInfoController {
 			return "developer/appinfomodify";
 		}
 		return "developer/appinfolist";
+
 	}
 	
 	/**
@@ -476,6 +496,8 @@ public class DevAppInfoController {
 		
 		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
+
+
 														//该方法重造过可能会有bug
 		List<AppVersion> versionList = appVersionService.getAppVersionByInfoid(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
@@ -526,20 +548,24 @@ public class DevAppInfoController {
 	}
 	
 	/**
+
+	 * 查看app基础信息
+	 * @param id
 	 * 查看app详细信息
 	 * @param model
-	 * @param appinfoid
 	 * @return
 	 */
-	@RequestMapping("/list/appview/{appinfoid}")
-	public String appview(Model model,@PathVariable Integer appinfoid) {
-		
-		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
-		if(appInfo != null) {
-			model.addAttribute("appInfo", appInfo);
-		}
+	@RequestMapping("appview/{id}")
+	public String appView(@PathVariable Integer id,Model model) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		//查询版本列表
+		List<AppVersion> appVersionList = appVersionService.getVersionList();
+		model.addAttribute("appInfo", appInfo);
+		model.addAttribute("appVersionList", appVersionList);
 		return "developer/appinfoview";
 	}
+	
+	
 	
 	/**
 	 * 增加版本保存
