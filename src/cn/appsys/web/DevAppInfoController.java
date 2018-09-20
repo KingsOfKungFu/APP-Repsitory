@@ -56,6 +56,13 @@ public class DevAppInfoController {
 	private AppVersionService appVersionService;
 	
 
+	/**
+	 * 增加app信息
+	 * @param appInfo
+	 * @param request
+	 * @param multipartFile
+	 * @return
+	 */
 	@RequestMapping("/appinfoaddsave")
 	public String appInfoAddSave(@ModelAttribute AppInfo appInfo,HttpServletRequest request,
 								@RequestParam(value="a_logoPicPath",required = false)MultipartFile multipartFile) {
@@ -268,37 +275,11 @@ public class DevAppInfoController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("appinfomodify/{id}")
+	@RequestMapping("/appinfomodify/{id}")
 	public String appInfoModify(Model model ,@PathVariable Integer id) {
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		model.addAttribute("appInfo", appInfo);
 		return "developer/appinfomodify";
-	}
-	
-
-	/**
-	 * ����app��Ϣ�޸�
-	 * @return
-	 */
-	@RequestMapping("appinfolist")
-	public String appinfomodify() {
-		
-		return "";
-	}
-	
-	/**
-	 * ��ת��app�޸�ҳ��
-	 * @param appinfoid
-	 * @return
-	 */
-	@RequestMapping("/list/toappinfomodify")
-	public String toappinfomodify(@RequestParam Integer appinfoid) {
-		
-		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
-		if(appInfo != null) {
-			return "developer/appinfomodify";
-		}
-		return "developer/appinfolist";
 	}
 	
 	/**
@@ -313,7 +294,7 @@ public class DevAppInfoController {
 		
 		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
 		Map<String,Object> hashMap = new HashMap<>();
-		List<AppVersion> versionList = appVersionService.getVersionByAppInfoId(id);
+		List<AppVersion> versionList = appVersionService.getAppVersionByInfoid(id);
 		AppInfo appInfo = appInfoService.getAppInfoById(id);
 		boolean flag = false;
 		if(versionList != null) {
@@ -363,20 +344,22 @@ public class DevAppInfoController {
 	}
 	
 	/**
-	 * �鿴app��ϸ��Ϣ
+	 * 查看app基础信息
+	 * @param id
 	 * @param model
-	 * @param appinfoid
 	 * @return
 	 */
-	@RequestMapping("/list/appview/{appinfoid}")
-	public String appview(Model model,@PathVariable Integer appinfoid) {
-		
-		AppInfo appInfo = appInfoService.getAppInfoById(appinfoid);
-		if(appInfo != null) {
-			model.addAttribute("appInfo", appInfo);
-		}
+	@RequestMapping("appview/{id}")
+	public String appView(@PathVariable Integer id,Model model) {
+		AppInfo appInfo = appInfoService.getAppInfoById(id);
+		//查询版本列表
+		List<AppVersion> appVersionList = appVersionService.getVersionList();
+		model.addAttribute("appInfo", appInfo);
+		model.addAttribute("appVersionList", appVersionList);
 		return "developer/appinfoview";
 	}
+	
+	
 	
 	/**
 	 * ���Ӱ汾

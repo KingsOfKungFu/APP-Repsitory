@@ -6,31 +6,33 @@ import cn.appsys.pojo.AppVersion;
 
 public interface AppVersionService {
 	/**
-	 * ¸ù¾ÝinfoidÉ¾³ýËùÓÐ°æ±¾
+	 * ï¿½ï¿½ï¿½ï¿½infoidÉ¾ï¿½ï¿½ï¿½ï¿½ï¿½Ð°æ±¾
 	 * @param id
 	 * @return
 	 */
 	boolean delVersionByInfoId(Integer id);
 	
 	/**
-	 * ¸ù¾Ýappinfoid²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appinfoidï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param id
 	 * @return
 	 */
-	List<AppVersion> getVersionByAppInfoId(Integer id);
+	//List<AppVersion> getVersionByAppInfoId(Integer id);
 	
 	/**
-	 * Ôö¼Ó°æ±¾
+	 * ï¿½ï¿½ï¿½Ó°æ±¾
 	 * @param appVersion
 	 */
 	boolean addVersion(AppVersion appVersion);
 	
 	/**
-	 * ¸ù¾ÝappId²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appIdï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param appinfoid
 	 * @return
 	 */
 	List<AppVersion> getAppVersionByInfoid(Integer appinfoid);
+
+	List<AppVersion> getVersionList();
 
 	
 

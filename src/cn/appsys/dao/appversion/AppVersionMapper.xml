@@ -4,7 +4,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.appsys.dao.appversion.AppVersionMapper">
 
-
+	<!-- List<AppVersion> getVersionList(); -->
+	<select id="getVersionList" resultType="AppVersion">
+		select v.id,v.versionNo,v.versionInfo,v.downloadLink,v.versionSize,v.createdBy,v.creationDate,
+				v.modifyBy,v.modifyDate,v.apkLocPath,v.apkFileName,
+				v.appId,(select i.softwareName from app_info i where i.id=v.appId) as appName,
+				v.publishStatus,(select d.valueName from data_dictionary d where d.valueId=v.publishStatus and d.typeCode='APP_STATUS') as publishStatusName
+					from app_version v	
+	</select>
 
 	<!-- int delVersionByInfoId(@Param("id") Integer id); -->
 	<delete id="delVersionByInfoId">
@@ -14,12 +21,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 
 	<!-- List<AppVersion> getVersionByAppInfoId(@Param("id") Integer id); -->
-	<select id="getVersionByAppInfoId" resultType="AppVersion">
+	<!-- <select id="getVersionByAppInfoId" resultType="AppVersion">
 		select (SELECT i.softwareName FROM app_info i WHERE i.id = a.appId) as appName,a.id,a.appId,a.versionNo,a.versionInfo,a.publishStatus,a.downloadLink,a.versionSize,a.createdBy,a.creationDate,a.modifyBy,a.apkLocPath,a.apkLocPath,
 			(SELECT d.typeName FROM data_dictionary d WHERE d.typeCode = 'PUBLISH_STATUS' AND d.id = a.publishStatus) as publishStatusName,a.modifyDate
 				from app_version a
 					where a.appId = #{id}
-	</select>
+	</select> -->
 	
 	<!-- int addVersion(AppVersion appVersion); -->
 	<insert id="addVersion">

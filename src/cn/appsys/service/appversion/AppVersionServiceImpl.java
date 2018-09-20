@@ -27,11 +27,11 @@ public class AppVersionServiceImpl implements AppVersionService {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public List<AppVersion> getVersionByAppInfoId(Integer id) {
 		return appVersionMapper.getVersionByAppInfoId(id);
 	}
-	
+	*/
 	@Override
 	public List<AppVersion> getAppVersionByInfoid(Integer appinfoid) {
 		
@@ -44,6 +44,11 @@ public class AppVersionServiceImpl implements AppVersionService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<AppVersion> getVersionList() {
+		return appVersionMapper.getVersionList();
 	}
 
 	

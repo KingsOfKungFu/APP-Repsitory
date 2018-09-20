@@ -16,25 +16,27 @@ public interface AppVersionMapper {
 	int delVersionByInfoId(@Param("id") Integer id);
 	
 	/**
-	 * ¸ù¾Ýappinfoid²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appinfoidï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param id
 	 * @return
 	 */
-	List<AppVersion> getVersionByAppInfoId(@Param("id") Integer id);
+	//List<AppVersion> getVersionByAppInfoId(@Param("id") Integer id);
 	
 	/**
-	 * Ôö¼Ó°æ±¾
+	 * ï¿½ï¿½ï¿½Ó°æ±¾
 	 * @param appVersion
 	 * @return
 	 */
 	int addVersion(AppVersion appVersion);
 	
 	/**
-	 * ¸ù¾ÝappId²éÑ¯°æ±¾ÁÐ±í
+	 * ï¿½ï¿½ï¿½ï¿½appIdï¿½ï¿½Ñ¯ï¿½æ±¾ï¿½Ð±ï¿½
 	 * @param appinfoid
 	 * @return
 	 */
 	List<AppVersion> getAppVersionByInfoid(@Param("appinfoid") Integer appinfoid);
+
+	List<AppVersion> getVersionList();
 
 	
 
