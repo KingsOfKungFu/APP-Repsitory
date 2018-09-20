@@ -464,7 +464,7 @@ public class DevAppInfoController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("list/delapp")
+	@RequestMapping("/delapp")
 	public String delapp(HttpServletRequest request,Model model,Integer id) {
 		
 		String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"uploadfiles"+File.separator);
@@ -607,7 +607,7 @@ public class DevAppInfoController {
 	 * @param appinfoid
 	 * @return
 	 */
-	@RequestMapping("list/appversionadd/{appinfoid}")
+	@RequestMapping("/appversionadd/{appinfoid}")
 	public String appversionadd(Model model,@PathVariable Integer appinfoid,HttpServletRequest request) {
 		
 		List<AppVersion> appVersionList = appVersionService.getAppVersionByInfoid(appinfoid);
