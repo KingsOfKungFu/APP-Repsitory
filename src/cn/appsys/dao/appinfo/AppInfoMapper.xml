@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateLogoPicPath" parameterType="int">
 		update app_info 
 			set 
-				logoPicPath = null
+				logoPicPath = null,
 				logoLocPath = null
 				 	where id = #{id}
 				
